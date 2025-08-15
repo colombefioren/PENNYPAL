@@ -1,4 +1,4 @@
-import React, { cloneElement, isValidElement, useEffect, useMemo, useRef, useState } from 'react';
+import React, { cloneElement, isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
@@ -65,7 +65,7 @@ const Tooltip: React.FC<TooltipProps> = ({
     leaveTimer.current = setTimeout(() => setOpen(false), leaveDelay);
   };
 
-  const updatePosition = () => {
+  const updatePosition = useCallback(() => {
     const anchor = childRef.current;
     const tip = tooltipRef.current;
     if (!anchor || !tip) return;
@@ -101,7 +101,7 @@ const Tooltip: React.FC<TooltipProps> = ({
     left = Math.max(margin, Math.min(left, vw - t.width - margin));
     top = Math.max(margin, Math.min(top, vh - t.height - margin));
     setCoords({ left, top });
-  };
+  }, [placement, arrow]);
 
   useEffect(() => {
     if (!open) return;
@@ -120,7 +120,7 @@ const Tooltip: React.FC<TooltipProps> = ({
       window.removeEventListener('resize', onResize);
       window.removeEventListener('scroll', onScroll, true);
     };
-  }, [open, placement]);
+  }, [open, updatePosition]);
 
   useEffect(() => () => clearTimers(), []);
 

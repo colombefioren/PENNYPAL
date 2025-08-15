@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import React from 'react';
 import { ToastProvider, useToast } from './Toast';
 import type { ToastProviderProps } from './Toast';
@@ -66,7 +66,6 @@ const Demo: React.FC = () => {
 };
 
 export const Playground: Story = {
-  name: 'Playground',
   render: (args) => (
     <ToastProvider {...args}>
       <Demo />
