@@ -8,7 +8,7 @@ import React, {
   useEffect,
 } from 'react';
 import type { PropsWithChildren } from 'react';
-import { Icon, SeverityStyles } from '../constants/toastIcon';
+import { Icon, SeverityStyles } from './constants/toastIcon';
 
 // Types
 export type ToastSeverity = 'success' | 'error' | 'warning' | 'info' | 'loading';

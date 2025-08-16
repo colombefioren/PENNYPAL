@@ -1,7 +1,9 @@
-import React, { cloneElement, isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { cloneElement, isValidElement, useEffect, useMemo, useRef, useState, useId } from 'react';
 import { createPortal } from 'react-dom';
+import { useAnchoredPopover } from './hooks/useAnchoredPopover';
+import { TOOLTIP_BASE, TOOLTIP_HIDDEN, TOOLTIP_SHOWN, arrowPlacementClass, initialMotionClass, type TooltipPlacement } from './constants/tooltip';
 
-export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
+export type { TooltipPlacement };
 
 export interface TooltipProps {
   children: React.ReactElement;
@@ -34,12 +36,13 @@ const Tooltip: React.FC<TooltipProps> = ({
   classes,
 }) => {
   const [open, setOpen] = useState(false);
-  const [coords, setCoords] = useState<{ left: number; top: number }>({ left: 0, top: 0 });
   const [ready, setReady] = useState(false);
   const childRef = useRef<HTMLElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const enterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { coords, placement: computedPlacement, updatePosition } = useAnchoredPopover(open, childRef, tooltipRef, [placement, arrow], placement);
+  const tooltipId = useId();
 
   const clearTimers = () => {
     if (enterTimer.current) {
@@ -65,44 +68,6 @@ const Tooltip: React.FC<TooltipProps> = ({
     leaveTimer.current = setTimeout(() => setOpen(false), leaveDelay);
   };
 
-  const updatePosition = useCallback(() => {
-    const anchor = childRef.current;
-    const tip = tooltipRef.current;
-    if (!anchor || !tip) return;
-    const a = anchor.getBoundingClientRect();
-    const t = tip.getBoundingClientRect();
-    let left = 0;
-    let top = 0;
-    const gap = arrow ? 10 : 6;
-
-    switch (placement) {
-      case 'top':
-        left = a.left + a.width / 2 - t.width / 2;
-        top = a.top - t.height - gap;
-        break;
-      case 'bottom':
-        left = a.left + a.width / 2 - t.width / 2;
-        top = a.bottom + gap;
-        break;
-      case 'left':
-        left = a.left - t.width - gap;
-        top = a.top + a.height / 2 - t.height / 2;
-        break;
-      case 'right':
-        left = a.right + gap;
-        top = a.top + a.height / 2 - t.height / 2;
-        break;
-    }
-
-    // Clamp within viewport with small margins
-    const margin = 8;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    left = Math.max(margin, Math.min(left, vw - t.width - margin));
-    top = Math.max(margin, Math.min(top, vh - t.height - margin));
-    setCoords({ left, top });
-  }, [placement, arrow]);
-
   useEffect(() => {
     if (!open) return;
     // Keep hidden until positioned, then reveal next frame
@@ -111,45 +76,22 @@ const Tooltip: React.FC<TooltipProps> = ({
       updatePosition();
       requestAnimationFrame(() => setReady(true));
     });
-
-    const onResize = () => updatePosition();
-    const onScroll = () => updatePosition();
-    window.addEventListener('resize', onResize);
-    window.addEventListener('scroll', onScroll, true);
-    return () => {
-      window.removeEventListener('resize', onResize);
-      window.removeEventListener('scroll', onScroll, true);
-    };
   }, [open, updatePosition]);
 
   useEffect(() => () => clearTimers(), []);
 
-  const arrowClass = useMemo(() => {
-    const b = 'absolute w-2 h-2 rotate-45';
-    switch (placement) {
-      case 'top':
-        return `${b} -bottom-1 left-1/2 -translate-x-1/2`;
-      case 'bottom':
-        return `${b} -top-1 left-1/2 -translate-x-1/2`;
-      case 'left':
-        return `${b} -right-1 top-1/2 -translate-y-1/2`;
-      case 'right':
-        return `${b} -left-1 top-1/2 -translate-y-1/2`;
-    }
-  }, [placement]);
+  const arrowClass = useMemo(() => arrowPlacementClass(computedPlacement), [computedPlacement]);
+
+  const motionBase = useMemo(() => initialMotionClass(computedPlacement), [computedPlacement]);
 
   const tooltipClasses = useMemo(() => {
-    const base = `
-      fixed z-[9998] max-w-xs break-words select-none
-      px-2.5 py-1.5 text-xs rounded-md shadow-lg
-      bg-gray-900 text-white
-      transition-all duration-150 ease-out
-      will-change-transform will-change-opacity
-    `.trim().replace(/\s+/g, ' ');
-
-    const vis = open && ready ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none';
-    return [base, vis, className, classes?.content].filter(Boolean).join(' ');
-  }, [open, ready, className, classes?.content]);
+    const base = TOOLTIP_BASE;
+    const hidden = TOOLTIP_HIDDEN;
+    const shown = TOOLTIP_SHOWN;
+    // Start slightly offset, settle to zero when shown
+    const motion = open && ready ? 'translate-x-0 translate-y-0' : motionBase;
+    return [base, open && ready ? shown : hidden, motion, className, classes?.content].filter(Boolean).join(' ');
+  }, [open, ready, motionBase, className, classes?.content]);
 
   if (!isValidElement(children)) return children;
 
@@ -158,6 +100,9 @@ const Tooltip: React.FC<TooltipProps> = ({
 
   const childWithHandlers = cloneElement(children, {
     ref: childRef,
+    'aria-describedby': open && title
+      ? [originalProps['aria-describedby'], tooltipId].filter(Boolean).join(' ')
+      : originalProps['aria-describedby'],
     onMouseEnter: (e: React.MouseEvent) => {
       if (!disableHoverListener) show();
       originalProps.onMouseEnter?.(e);
@@ -190,6 +135,7 @@ const Tooltip: React.FC<TooltipProps> = ({
       {open && title && createPortal(
         <div
           ref={tooltipRef}
+          id={tooltipId}
           role="tooltip"
           className={tooltipClasses}
           style={{ left: coords.left, top: coords.top }}

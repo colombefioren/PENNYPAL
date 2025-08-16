@@ -23,9 +23,9 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const sizeStyles: Record<ButtonSize, string> = {
-  small: 'min-h-[32px] text-sm px-3 py-1.5',
-  medium: 'min-h-[36px] text-sm px-4 py-2',
-  large: 'min-h-[42px] text-base px-5 py-2.5',
+  small: 'h-[32px] text-sm px-3 py-1.5',
+  medium: 'h-[36px] text-sm px-4 py-2',
+  large: 'h-[42px] text-base px-5 py-2.5',
 };
 
 const rippleDurationMs = 550;
