@@ -8,7 +8,8 @@ import React, {
   useEffect,
 } from 'react';
 import type { PropsWithChildren } from 'react';
-import { Icon, SeverityStyles } from './constants/toastIcon';
+import { SeverityStyles } from './constants/toast';
+import { SuccessIcon, ErrorIcon, WarningIcon, InfoIcon, LoadingIcon } from './icons/ToastIcons';
 
 // Types
 export type ToastSeverity = 'success' | 'error' | 'warning' | 'info' | 'loading';
@@ -78,6 +79,13 @@ export interface ToastProps {
 }
 
 const severityStyles: Record<ToastSeverity, { filled: string; outlined: string; standard: string }> = SeverityStyles
+const Icons: Record<ToastSeverity, React.ReactNode> = {
+  success: <SuccessIcon />,
+  error: <ErrorIcon />,
+  warning: <WarningIcon />,
+  info: <InfoIcon />,
+  loading: <LoadingIcon />,
+};
 
 const Toast: React.FC<ToastProps> = ({ item, onClose, paused = false, classes }) => {
   const { id, message, severity, variant, action, autoHideDuration } = item;
@@ -100,7 +108,7 @@ const Toast: React.FC<ToastProps> = ({ item, onClose, paused = false, classes })
         classes?.root,
       ].filter(Boolean).join(' ')}
     >
-      <span className={['shrink-0', classes?.icon].filter(Boolean).join(' ')}>{Icon[severity]}</span>
+      <span className={['shrink-0', classes?.icon].filter(Boolean).join(' ')}>{Icons[severity]}</span>
       <div className={['text-sm leading-snug', classes?.message].filter(Boolean).join(' ')}>{message}</div>
       {action && <div className={['ml-auto', classes?.action].filter(Boolean).join(' ')}>{action}</div>}
     </div>

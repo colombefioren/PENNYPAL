@@ -14,6 +14,7 @@ export function useAnchoredPopover<TAnchor extends HTMLElement, TPopover extends
   const [coords, setCoords] = useState<{ left: number; top: number; width: number }>({ left: 0, top: 0, width: 0 });
   const [placement, setPlacement] = useState<PopoverPlacement>('bottom');
   const rafRef = useRef<number | null>(null);
+  const depsKey = JSON.stringify(deps);
 
   const updatePosition = useCallback(() => {
     const anchor = anchorRef.current; if (!anchor) return;
@@ -68,7 +69,10 @@ export function useAnchoredPopover<TAnchor extends HTMLElement, TPopover extends
     setCoords({ left, top, width: a.width });
   }, [anchorRef, popoverRef, preferred]);
 
-  useLayoutEffect(() => { if (!open) return; updatePosition(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [open, updatePosition, ...deps]);
+  useLayoutEffect(() => {
+    if (!open) return;
+    updatePosition();
+  }, [open, updatePosition, depsKey]);
 
   useEffect(() => {
     if (!open) return;
