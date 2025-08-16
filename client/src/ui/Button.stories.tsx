@@ -52,7 +52,7 @@ export default function Page() {
     },
   },
   render: () => (
-    <div style={{ display: 'flex', gap: 12 }}>
+    <div className='flex gap-2'>
       <Button>Button</Button>
       <Button size="small">Small</Button>
       <Button size="large">Large</Button>

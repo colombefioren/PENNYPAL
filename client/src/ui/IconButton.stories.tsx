@@ -25,7 +25,6 @@ export const EdgeEnd: Story = { args: { edge: 'end' } };
 export const NoRipple: Story = { args: { ripple: false } };
 export const Disabled: Story = { args: { disabled: true } };
 
-// Simple, copy-paste static example
 export const StaticExample: Story = {
   name: 'Static example (copy-paste)',
   parameters: {
@@ -52,7 +51,7 @@ export default function Page() {
   render: () => (
     <div style={{ display: 'flex', gap: 12 }}>
       <IconButton aria-label="Add"><span>✚</span></IconButton>
-      <IconButton size="small" aria-label="Add"><span>✚</span></IconButton>
+      <IconButton size="small" aria-label="Add" className='!bg-gray-500' ><span>✚</span></IconButton>
       <IconButton size="large" aria-label="Add"><span>✚</span></IconButton>
       <IconButton edge="start" aria-label="Menu"><span>≡</span></IconButton>
       <IconButton edge="end" aria-label="Close"><span>×</span></IconButton>

@@ -91,9 +91,8 @@ export const WithCustomClasses: Story = {
   ),
 };
 
-// Simple, copy-paste static example (no args spread)
 export const StaticExample: Story = {
-  name: 'Static example (copier-coller)',
+  name: 'Static example (copy-paste)',
   parameters: {
     docs: {
       source: {
@@ -114,7 +113,7 @@ export default function Page() {
         action: 'underline',
       }}
     >
-      {/* ...votre application... */}
+      {/* ...your app... */}
     </ToastProvider>
   );
 }`,
