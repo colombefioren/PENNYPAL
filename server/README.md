@@ -1,42 +1,64 @@
-# Expense Tracker Server
+<div align="center">
+  <h1 style="margin-bottom: 0.25rem;">Expense Tracker – Server</h1>
+  <p style="margin-top: 0; color: #6b7280;">Express API powering the Expense Tracker.</p>
+  <p>
+    <img alt="Express" src="https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white" />
+    <img alt="Node" src="https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white" />
+    <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-pg-336791?logo=postgresql&logoColor=white" />
+  </p>
+</div>
 
-Express.js backend server for the Expense Tracker application.
+<h2>Tech Stack</h2>
 
-## 🚀 Quick Start
+- Node.js 18+
+- Express 4
+- PostgreSQL (via `pg`)
+- Helmet, CORS, Morgan
 
-### Prerequisites
-- Node.js (v18 or higher)
+<h2>Requirements</h2>
+
+- Node.js >= 18
 - npm or yarn
 
-### Installation
+<h2>Installation & Run</h2>
 
-1. **Install dependencies**
-   ```bash
-   npm install
-   ```
+1) Install dependencies
 
-2. **Setup environment variables**
-   ```bash
-   cp .env.example .env
-   ```
-   Then edit `.env` with your actual configuration values.
+```bash
+npm install
+```
 
-3. **Start the server**
-   ```bash
-   # Development mode (with auto-reload)
-   npm run dev
-   
-   # Production mode
-   npm start
-   ```
+2) Configure environment
 
-The server will start on `http://localhost:8080` by default.
+```bash
+cp .env.example .env
+```
 
-## 🤝 Development
+Then edit `.env` with your actual configuration values.
 
-For other developers joining the project:
+3) Start the server
 
-1. Clone the repository
-2. Follow the installation steps above
-3. Make sure to use the `.env.example` as a template
-4. Contact the team for any missing environment variables
+```bash
+# Development (auto-reload)
+npm run dev
+
+# Production
+npm start
+```
+
+Default: http://localhost:8080
+
+<h2>Environment</h2>
+
+Key variables in `server/.env`:
+
+- `PORT` – server port (default: 8080)
+- `DATABASE_URL` – Postgres connection string
+- `JWT_SECRET` – secret for JWT signing
+- `CORS_ORIGIN` – allowed frontend origin (e.g., http://localhost:5173)
+
+<h2>Notes</h2>
+
+- Logging via `morgan` (dev-friendly).
+- Security headers via `helmet`.
+- CORS configured via `CORS_ORIGIN`.
