@@ -22,7 +22,7 @@ export interface IncomeCategory {
 
 export interface CreateIncomeRequest {
   amount: number;
-  date: string;
+  date?: string;
   source: string;
   description?: string;
   category_id: number;
