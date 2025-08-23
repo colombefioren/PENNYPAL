@@ -70,7 +70,7 @@ const deleteIncome = async (id, userId) => {
   });
 };
 
-//---------------INCOME CATEGORIES---------------//
+//---------------INCOME CATEGORY---------------//
 
 //GET ALL
 const getIncomeCategories = async (userId) => {
