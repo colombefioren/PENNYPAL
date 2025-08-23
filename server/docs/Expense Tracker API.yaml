@@ -141,12 +141,6 @@ paths:
           description: Expense updated
     delete:
       summary: Delete an expense
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
       responses:
         '204':
           description: Expense deleted
@@ -218,12 +212,6 @@ paths:
           description: Income updated
     delete:
       summary: Delete an income entry
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
       responses:
         '204':
           description: Income deleted
