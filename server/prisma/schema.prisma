@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -49,7 +48,6 @@ model IncomeCategory {
   category_id   Int       @id @default(autoincrement())
   category_name String    @db.VarChar(50)
   icon_url      String?   @db.VarChar(500)
-  icon_emoji    String?   @db.VarChar(10)
   is_custom     Boolean   @default(false)
   user_id       Int?
   user          User?     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
