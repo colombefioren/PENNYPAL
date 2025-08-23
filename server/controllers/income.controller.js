@@ -10,14 +10,21 @@ export const createIncome = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  const income = await incomeService.createIncome(req.user.user_id, {
+  const incomeData = {
     amount: parseFloat(amount),
-    date: new Date(date),
     source,
     description,
     category: { connect: { category_id: parseInt(category_id) } },
-  });
+  };
 
+  if (date) {
+    const parsedDate = new Date(date);
+    if (!isNaN(parsedDate.getTime())) {
+      incomeData.date = parsedDate;
+    }
+  }
+
+  const income = await incomeService.createIncome(req.user.user_id, incomeData);
   res.status(201).json(income);
 });
 
@@ -87,7 +94,9 @@ export const getIncomeCategories = asyncHandler(async (req, res) => {
 });
 
 export const getIncomeCategoriesByUser = asyncHandler(async (req, res) => {
-  const categories = await incomeService.getIncomeCategoriesByUser(req.user.user_id);
+  const categories = await incomeService.getIncomeCategoriesByUser(
+    req.user.user_id
+  );
   res.json(categories);
 });
 
@@ -143,5 +152,3 @@ export const deleteIncomeCategory = asyncHandler(async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-
-
