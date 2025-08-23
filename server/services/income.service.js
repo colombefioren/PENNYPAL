@@ -175,6 +175,7 @@ export default {
   deleteIncome,
   getIncomeCategories,
   createIncomeCategory,
+  getIncomeCategoriesByUser,
   updateIncomeCategory,
   deleteIncomeCategory,
 };

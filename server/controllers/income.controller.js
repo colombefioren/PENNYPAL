@@ -6,7 +6,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 export const createIncome = asyncHandler(async (req, res) => {
   const { amount, date, source, description, category_id } = req.body;
 
-  if (!amount || !date || !source || !category_id) {
+  if (!amount || !source || !category_id) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
