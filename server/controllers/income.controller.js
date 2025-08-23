@@ -1,9 +1,9 @@
-import { incomeService } from "../../services/income/income.service";
-import { asyncHandler } from "../../utils/asyncHandler";
+import incomeService from "../services/income.service.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 //---------------INCOME---------------//
 
-const createIncome = asyncHandler(async (req, res) => {
+export const createIncome = asyncHandler(async (req, res) => {
   const { amount, date, source, description, category_id } = req.body;
 
   if (!amount || !date || !source || !category_id) {
@@ -21,7 +21,7 @@ const createIncome = asyncHandler(async (req, res) => {
   res.status(201).json(income);
 });
 
-const getIncomes = asyncHandler(async (req, res) => {
+export const getIncomes = asyncHandler(async (req, res) => {
   const { start, end } = req.query;
   const filters = {};
 
@@ -32,7 +32,7 @@ const getIncomes = asyncHandler(async (req, res) => {
   res.json(incomes);
 });
 
-const getIncome = asyncHandler(async (req, res) => {
+export const getIncome = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const income = await incomeService.getIncomeById(id, req.user.user_id);
 
@@ -43,7 +43,7 @@ const getIncome = asyncHandler(async (req, res) => {
   res.json(income);
 });
 
-const updateIncome = asyncHandler(async (req, res) => {
+export const updateIncome = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
 
@@ -68,7 +68,7 @@ const updateIncome = asyncHandler(async (req, res) => {
   }
 });
 
-const deleteIncome = asyncHandler(async (req, res) => {
+export const deleteIncome = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -81,17 +81,17 @@ const deleteIncome = asyncHandler(async (req, res) => {
 
 //---------------INCOME CATEGORIES---------------//
 
-const getIncomeCategories = asyncHandler(async (req, res) => {
+export const getIncomeCategories = asyncHandler(async (req, res) => {
   const categories = await incomeService.getIncomeCategories(req.user.user_id);
   res.json(categories);
 });
 
-const getIncomeCategoriesByUser = asyncHandler(async (req, res) => {
+export const getIncomeCategoriesByUser = asyncHandler(async (req, res) => {
   const categories = await incomeService.getIncomeCategoriesByUser(req.user.user_id);
   res.json(categories);
 });
 
-const createIncomeCategory = asyncHandler(async (req, res) => {
+export const createIncomeCategory = asyncHandler(async (req, res) => {
   const { category_name, icon_url, icon_emoji } = req.body;
 
   if (!category_name) {
@@ -113,7 +113,7 @@ const createIncomeCategory = asyncHandler(async (req, res) => {
   }
 });
 
-const updateIncomeCategory = asyncHandler(async (req, res) => {
+export const updateIncomeCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { category_name, icon_url, icon_emoji } = req.body;
 
@@ -133,7 +133,7 @@ const updateIncomeCategory = asyncHandler(async (req, res) => {
   }
 });
 
-const deleteIncomeCategory = asyncHandler(async (req, res) => {
+export const deleteIncomeCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -144,14 +144,4 @@ const deleteIncomeCategory = asyncHandler(async (req, res) => {
   }
 });
 
-export default {
-  createIncome,
-  getIncomes,
-  getIncome,
-  updateIncome,
-  deleteIncome,
-  getIncomeCategories,
-  createIncomeCategory,
-  updateIncomeCategory,
-  deleteIncomeCategory,
-};
+

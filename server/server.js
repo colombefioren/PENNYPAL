@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
+import incomeRoutes from './routes/income.route.js';
 
 dotenv.config();
 
@@ -10,6 +11,9 @@ const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json());
+
+//Routes
+app.use('/api/incomes', incomeRoutes);
 
 // Initialize a single Prisma client instance
 const prisma = new PrismaClient();
