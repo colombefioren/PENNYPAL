@@ -86,6 +86,11 @@ const getIncomeCategories = asyncHandler(async (req, res) => {
   res.json(categories);
 });
 
+const getIncomeCategoriesByUser = asyncHandler(async (req, res) => {
+  const categories = await incomeService.getIncomeCategoriesByUser(req.user.user_id);
+  res.json(categories);
+});
+
 const createIncomeCategory = asyncHandler(async (req, res) => {
   const { category_name, icon_url, icon_emoji } = req.body;
 

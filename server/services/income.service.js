@@ -82,6 +82,16 @@ const getIncomeCategories = async (userId) => {
   });
 };
 
+//GET ALL BY USER
+const getIncomeCategoriesByUser = async (userId) => {
+  return await prisma.incomeCategory.findMany({
+    where: {
+      user_id: userId,
+    },
+    orderBy: [{ is_custom: "asc" }, { category_name: "asc" }],
+  });
+};
+
 //POST
 const createIncomeCategory = async (userId, data) => {
   const existingCategory = await prisma.incomeCategory.findFirst({
