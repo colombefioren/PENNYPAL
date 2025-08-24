@@ -48,8 +48,8 @@ const Mascot: React.FC<MascotProps> = ({ className = "" }) => {
       } else {
         //for idle expression we are looping 3-5 times before reset
         if (expression === "idle") {
-          const loopCount = Math.floor(Math.random() * 3) + 3; 
-          const resetAfter = loopCount * totalFrames * 100; //approximation of animation duration
+          const loopCount = 3; 
+          const resetAfter = loopCount * totalFrames * 200; //approximation of animation duration
 
           setTimeout(() => {
             setCurrentFrame(1);
@@ -62,7 +62,7 @@ const Mascot: React.FC<MascotProps> = ({ className = "" }) => {
       }
     };
 
-    const frameDelay = expression === "idle" ? 500 : 200;
+    const frameDelay = expression === "idle" ? 3000 : 2000;
 
     frameTimeoutRef.current = setTimeout(animateFrames, frameDelay);
 
@@ -78,7 +78,7 @@ const Mascot: React.FC<MascotProps> = ({ className = "" }) => {
   };
 
   return (
-    <div className={`fixed bottom-4 right-4 z-50 ${className}`}>
+    <div className={`fixed bottom-10 right-10 z-50 ${className}`}>
       <div
         className={`
         transition-opacity duration-300
@@ -88,7 +88,7 @@ const Mascot: React.FC<MascotProps> = ({ className = "" }) => {
         <img
           src={getImageSrc()}
           alt="Bear mascot"
-          className="w-24 h-24 object-contain"
+          className="w-52 h-52 object-contain"
         />
       </div>
     </div>
