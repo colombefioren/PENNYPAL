@@ -8,7 +8,7 @@ import type {
 
 export class IncomeService {
   //GET all incomes with optional filtering
-  static async getIncomes(start?: string, end?: string): Promise<Income[]> {
+  static async getIncomes(start?: string, end?: string) {
     try {
       const response = await DefaultService.getIncomes(start, end);
       return response as Income[];
@@ -19,7 +19,7 @@ export class IncomeService {
   }
 
   //GET income by id
-  static async getIncomeById(id: string): Promise<Income> {
+  static async getIncomeById(id: string) {
     try {
       const response = await DefaultService.getIncomes1(id);
       return response as Income;
@@ -30,7 +30,7 @@ export class IncomeService {
   }
 
   //POST income
-  static async createIncome(incomeData: CreateIncomeRequest): Promise<Income> {
+  static async createIncome(incomeData: CreateIncomeRequest) {
     try {
       const requestData = {
         ...incomeData,
@@ -49,10 +49,7 @@ export class IncomeService {
   }
 
   //UPDATE income
-  static async updateIncome(
-    id: string,
-    incomeData: UpdateIncomeRequest
-  ): Promise<Income> {
+  static async updateIncome(id: string, incomeData: UpdateIncomeRequest) {
     try {
       const requestData = { ...incomeData };
       if (incomeData.amount !== undefined) {
@@ -68,7 +65,7 @@ export class IncomeService {
   }
 
   //DELETE income
-  static async deleteIncome(id: string): Promise<void> {
+  static async deleteIncome(id: string) {
     try {
       await DefaultService.deleteIncomes(id);
     } catch (error) {
@@ -78,7 +75,7 @@ export class IncomeService {
   }
 
   //GET ALL income categories (custom and system)
-  static async getIncomeCategories(): Promise<IncomeCategory[]> {
+  static async getIncomeCategories() {
     try {
       const response = await DefaultService.getCategories();
 
@@ -90,7 +87,7 @@ export class IncomeService {
   }
 
   //GET custom categories
-  static async getCustomIncomeCategories(): Promise<IncomeCategory[]> {
+  static async getCustomIncomeCategories() {
     try {
       const allCategories = await this.getIncomeCategories();
       return allCategories.filter((category) => category.is_custom);
@@ -101,7 +98,7 @@ export class IncomeService {
   }
 
   //POST new category
-  static async createIncomeCategory(name: string): Promise<IncomeCategory> {
+  static async createIncomeCategory(name: string) {
     try {
       const response = await DefaultService.postCategories({ name });
       return response as IncomeCategory;
@@ -126,7 +123,7 @@ export class IncomeService {
   }
 
   //DELETE category
-  static async deleteIncomeCategory(id: string): Promise<void> {
+  static async deleteIncomeCategory(id: string) {
     try {
       await DefaultService.deleteCategories(id);
     } catch (error) {
