@@ -1,39 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { SpeedInsights } from '@vercel/speed-insights/react'
-import { Analytics } from '@vercel/analytics/react'
+import { Routes, Route, useLocation } from "react-router-dom";
+import { ToastProvider } from "./ui";
+import { IncomesPage } from "./pages/IncomesPage";
+import Sidebar from "./components/common/Sidebar";
+import Dashboard from "./pages/Dashboard";
+import DashboardHeader from "./components/common/Header";
+import BackgroundImage from "./components/common/BackgroundImage";
 
 function App() {
-  const [count, setCount] = useState(0)
+  /*
+    TODO: check auth then redirect to /login when not authenticated
+    TODO: use different layout for auth page and dashboard page
+  */
+  const location = useLocation();
 
   return (
-    <>
-      <SpeedInsights />
-      <Analytics />
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <ToastProvider
+      max={4}
+      dense={false}
+      pauseOnHover={true}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+    >
+      <div className="App min-h-screen relative">
+        {location.pathname.includes("/login") ||
+        location.pathname.includes("/register") ? null : (
+          <>
+            <BackgroundImage />
+            <DashboardHeader />
+            <Sidebar />
+          </>
+        )}
+
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/incomes" element={<IncomesPage />} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </ToastProvider>
+  );
 }
 
-export default App
+export default App;

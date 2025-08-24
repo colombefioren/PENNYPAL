@@ -160,6 +160,88 @@ export class DefaultService {
         });
     }
     /**
+     * Get system income categories
+     * @returns any List of system income categories"
+     * @throws ApiError
+     */
+    public static getIncomesCategories(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/incomes/categories',
+        });
+    }
+    /**
+     * Get user's custom income categories
+     * @returns any List of user's custom income categories
+     * @throws ApiError
+     */
+    public static getIncomesCustomCategories(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/incomes/custom-categories',
+        });
+    }
+    /**
+     * Create a new custom income category
+     * @param requestBody
+     * @returns any Income category created
+     * @throws ApiError
+     */
+    public static postIncomesCustomCategories(
+        requestBody: {
+            category_name: string;
+            icon_url?: string;
+        },
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/incomes/custom-categories',
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+    /**
+     * Update an income category
+     * @param id
+     * @param requestBody
+     * @returns any Income category updated
+     * @throws ApiError
+     */
+    public static putIncomesCustomCategories(
+        id: string,
+        requestBody: {
+            category_name: string;
+            icon_url?: string;
+        },
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/incomes/custom-categories/{id}',
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+    /**
+     * Delete an income category
+     * @param id
+     * @returns void
+     * @throws ApiError
+     */
+    public static deleteIncomesCustomCategories(
+        id: string,
+    ): CancelablePromise<void> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/incomes/custom-categories/{id}',
+            path: {
+                'id': id,
+            },
+        });
+    }
+    /**
      * List all incomes
      * @param start
      * @param end
@@ -188,9 +270,10 @@ export class DefaultService {
     public static postIncomes(
         requestBody?: {
             amount: number;
-            date: string;
+            date?: string;
             source?: string;
             description?: string;
+            category_id: number;
         },
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
