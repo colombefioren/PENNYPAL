@@ -10,6 +10,14 @@ export interface Income {
   category?: IncomeCategory;
 }
 
+export interface IncomeFormData {
+  amount: number;
+  date: string;
+  source: string;
+  description: string;
+  category_id: number;
+}
+
 export interface IncomeCategory {
   category_id: number;
   category_name: string;

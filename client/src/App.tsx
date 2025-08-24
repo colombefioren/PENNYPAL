@@ -5,6 +5,8 @@ import Sidebar from "./components/common/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import DashboardHeader from "./components/common/Header";
 import BackgroundImage from "./components/common/BackgroundImage";
+import { CreateIncomePage } from "./pages/CreateIncomePage";
+import { EditIncomePage } from "./pages/EditIncomePage";
 
 function App() {
   /*
@@ -12,7 +14,6 @@ function App() {
     TODO: use different layout for auth page and dashboard page
   */
   const location = useLocation();
-
   return (
     <ToastProvider
       max={4}
@@ -33,6 +34,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/incomes" element={<IncomesPage />} />
+          <Route path="/incomes/new" element={<CreateIncomePage />} />
+          <Route path="/incomes/:id/edit" element={<EditIncomePage />} />
         </Routes>
       </div>
     </ToastProvider>

@@ -1,7 +1,7 @@
-import React from "react";
+import { forwardRef, useImperativeHandle } from "react";
 import type { Income } from "../types/Income";
 import { useIncomes } from "../hooks/useIncomes";
-import { Button, Skeleton, Chip } from "../ui";
+import { Button, Chip } from "../ui";
 
 interface IncomeListProps {
   startDate?: string;
@@ -10,98 +10,101 @@ interface IncomeListProps {
   onDelete: (income: Income) => void;
 }
 
-export const IncomeList: React.FC<IncomeListProps> = ({
-  startDate,
-  endDate,
-  onEdit,
-  onDelete,
-}) => {
-  const { incomes, loading, error, refetch } = useIncomes(startDate, endDate);
+export interface IncomeListRef {
+  refetch: () => void;
+}
 
-  if (loading) {
-    return (
-      <div className="space-y-3">
-        {[...Array(5)].map((_, i) => (
-          <Skeleton key={i} variant="rect" height={60} rounded="rounded-md" />
-        ))}
-      </div>
-    );
-  }
+export const IncomeList = forwardRef<IncomeListRef, IncomeListProps>(
+  ({ startDate, endDate, onEdit, onDelete }, ref) => {
+    const { incomes, loading, error, refetch } = useIncomes(startDate, endDate);
 
-  if (error) {
-    return (
-      <div className="text-center py-8">
-        <div className="text-red-600 mb-4">Error: {error}</div>
-        <Button onClick={refetch}>Try Again</Button>
-      </div>
-    );
-  }
+    useImperativeHandle(ref, () => ({
+      refetch,
+    }));
 
-  return (
-    <div className="income-list">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Incomes</h2>
-        <Button onClick={refetch} size="small">
-          Refresh
-        </Button>
-      </div>
-
-      {incomes.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          No incomes found for the selected period
+    if (error) {
+      return (
+        <div className="text-center py-8">
+          <div className="text-red-600 mb-4">Error: {error}</div>
+          <Button onClick={refetch}>Try Again</Button>
         </div>
-      ) : (
-        <div className="space-y-3">
-          {incomes.map((income) => (
+      );
+    }
+
+    return (
+      <div className="income-list">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Incomes</h2>
+          <Button onClick={refetch} size="small">
+            Refresh
+          </Button>
+        </div>
+        {loading && (
+          <div className="w-full h-full flex items-center justify-center">
             <div
-              key={income.income_id}
-              className="border rounded-lg p-4 hover:shadow-md transition-shadow"
-            >
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-medium text-lg">
-                      ${income.amount.toFixed(2)}
-                    </h3>
-                    {income.category && (
-                      <Chip
-                        label={income.category.category_name}
-                        size="small"
-                        className="bg-blue-100 text-blue-800"
-                      />
+              className="size-10 mx-auto animate-spin rounded-full border-4 border-primary-light border-t-transparent"
+              role="status"
+              aria-label="Loading"
+            ></div>
+          </div>
+        )}
+        {incomes.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            No incomes found for the selected period
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {incomes.map((income) => (
+              <div
+                key={income.income_id}
+                className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-medium text-lg">
+                        {income.amount.toFixed(2)} MGA
+                      </h3>
+                      {income.category && (
+                        <Chip
+                          label={income.category.category_name}
+                          size="small"
+                          className="bg-blue-100 text-blue-800"
+                        />
+                      )}
+                    </div>
+                    <p className="text-gray-600 mb-1">{income.source}</p>
+                    {income.description && (
+                      <p className="text-gray-500 text-sm mb-2">
+                        {income.description}
+                      </p>
                     )}
-                  </div>
-                  <p className="text-gray-600 mb-1">{income.source}</p>
-                  {income.description && (
-                    <p className="text-gray-500 text-sm mb-2">
-                      {income.description}
+                    <p className="text-sm text-gray-400">
+                      {new Date(income.date).toLocaleDateString()}
                     </p>
-                  )}
-                  <p className="text-sm text-gray-400">
-                    {new Date(income.date).toLocaleDateString()}
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    size="small"
-                    onClick={() => onEdit(income)}
-                    className="border border-gray-300"
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    size="small"
-                    onClick={() => onDelete(income)}
-                    className="bg-red-100 text-red-700 hover:bg-red-200"
-                  >
-                    Delete
-                  </Button>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="small"
+                      onClick={() => onEdit(income)}
+                      className="border border-gray-300"
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      size="small"
+                      onClick={() => onDelete(income)}
+                      className="bg-red-100 text-red-700 hover:bg-red-200"
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+);

@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import type {
   Income,
-  CreateIncomeRequest,
-  UpdateIncomeRequest,
+  IncomeFormData
 } from "../types/Income";
-import { IncomeService } from "../services/IncomeService";
 import { useIncomeCategories } from "../hooks/useIncomeCategories";
 import { Button, TextField, Select, Dialog, useToast, Skeleton } from "../ui";
 
+
 interface IncomeFormProps {
   income?: Income;
-  onSave: () => void;
+  onSave: (formData: IncomeFormData) => Promise<void>;
   onCancel: () => void;
   open: boolean;
 }
@@ -21,22 +20,20 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
   onCancel,
   open,
 }) => {
-  const [formData, setFormData] = useState<
-    CreateIncomeRequest | UpdateIncomeRequest
-  >({
+  const { categories, loading: categoriesLoading } = useIncomeCategories();
+  const [saving, setSaving] = useState(false);
+  const toast = useToast();
+
+  const [formData, setFormData] = useState<IncomeFormData>({
     amount: income?.amount || 0,
     date: income?.date
       ? new Date(income.date).toISOString().split("T")[0]
       : new Date().toISOString().split("T")[0],
     source: income?.source || "",
     description: income?.description || "",
-    category_id: income?.category_id || 0,
+    category_id: income?.category_id || 1,
   });
 
-  const { categories, loading: categoriesLoading } = useIncomeCategories();
-  const [saving, setSaving] = useState(false);
-  const toast = useToast();
-  
   useEffect(() => {
     if (income) {
       setFormData({
@@ -52,7 +49,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
         date: new Date().toISOString().split("T")[0],
         source: "",
         description: "",
-        category_id: 0,
+        category_id: 1,
       });
     }
   }, [income, open]);
@@ -62,14 +59,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
     setSaving(true);
 
     try {
-      if (income) {
-        await IncomeService.updateIncome(income.income_id.toString(), formData);
-        toast.success("Income updated successfully");
-      } else {
-        await IncomeService.createIncome(formData as CreateIncomeRequest);
-        toast.success("Income created successfully");
-      }
-      onSave();
+      await onSave(formData);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Failed to save income";
@@ -80,7 +70,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
   };
 
   const handleChange = (
-    field: keyof typeof formData,
+    field: keyof IncomeFormData,
     value: string | number
   ) => {
     setFormData((prev) => ({
@@ -111,7 +101,6 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           type="date"
           value={formData.date ?? ""}
           onChange={(e) => handleChange("date", e.target.value)}
-          required
           fullWidth
         />
 
@@ -119,7 +108,6 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           label="Source"
           value={formData.source ?? ""}
           onChange={(e) => handleChange("source", e.target.value)}
-          required
           fullWidth
         />
 

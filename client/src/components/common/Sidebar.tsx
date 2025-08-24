@@ -18,7 +18,7 @@ const items = [
 
 export default function Sidebar() {
   return (
-    <div className="fixed left-2 top-2 h-[97vh]">
+    <div className="fixed left-2 top-2 h-[97vh] z-2">
       <div className="relative h-full w-56">
         <div className="absolute left-2 top-2 z-[101]">
           <Logo className="w-12 h-12 object-cover" />
