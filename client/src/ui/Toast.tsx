@@ -1,3 +1,4 @@
+// ui/Toast.tsx
 import React, {
   createContext,
   useCallback,
@@ -6,14 +7,26 @@ import React, {
   useRef,
   useState,
   useEffect,
-} from 'react';
-import type { PropsWithChildren } from 'react';
-import { SeverityStyles } from './constants/toast';
-import { SuccessIcon, ErrorIcon, WarningIcon, InfoIcon, LoadingIcon } from './icons/ToastIcons';
+} from "react";
+import type { PropsWithChildren } from "react";
+import { SeverityStyles } from "./constants/toast";
+import {
+  SuccessIcon,
+  ErrorIcon,
+  WarningIcon,
+  InfoIcon,
+  LoadingIcon,
+} from "./icons/ToastIcons";
+import { useMascot } from "../hooks/useMascot";
 
 // Types
-export type ToastSeverity = 'success' | 'error' | 'warning' | 'info' | 'loading';
-export type ToastVariant = 'filled' | 'outlined' | 'standard';
+export type ToastSeverity =
+  | "success"
+  | "error"
+  | "warning"
+  | "info"
+  | "loading";
+export type ToastVariant = "filled" | "outlined" | "standard";
 
 export interface ToastOptions {
   severity?: ToastSeverity;
@@ -29,8 +42,8 @@ export interface ToastItem extends Required<ToastOptions> {
 }
 
 export interface AnchorOrigin {
-  vertical: 'top' | 'bottom';
-  horizontal: 'left' | 'center' | 'right';
+  vertical: "top" | "bottom";
+  horizontal: "left" | "center" | "right";
 }
 
 export interface ToastProviderProps {
@@ -50,18 +63,33 @@ export interface ToastProviderProps {
 export interface ToastContextType {
   enqueue: (message: React.ReactNode, options?: ToastOptions) => string;
   close: (id: string) => void;
-  success: (message: React.ReactNode, options?: Omit<ToastOptions, 'severity'>) => string;
-  error: (message: React.ReactNode, options?: Omit<ToastOptions, 'severity'>) => string;
-  warning: (message: React.ReactNode, options?: Omit<ToastOptions, 'severity'>) => string;
-  info: (message: React.ReactNode, options?: Omit<ToastOptions, 'severity'>) => string;
-  loading: (message: React.ReactNode, options?: Omit<ToastOptions, 'severity' | 'autoHideDuration'>) => string;
+  success: (
+    message: React.ReactNode,
+    options?: Omit<ToastOptions, "severity">
+  ) => string;
+  error: (
+    message: React.ReactNode,
+    options?: Omit<ToastOptions, "severity">
+  ) => string;
+  warning: (
+    message: React.ReactNode,
+    options?: Omit<ToastOptions, "severity">
+  ) => string;
+  info: (
+    message: React.ReactNode,
+    options?: Omit<ToastOptions, "severity">
+  ) => string;
+  loading: (
+    message: React.ReactNode,
+    options?: Omit<ToastOptions, "severity" | "autoHideDuration">
+  ) => string;
 }
 
 const ToastContext = createContext<ToastContextType | null>(null);
 
 export const useToast = (): ToastContextType => {
   const ctx = useContext(ToastContext);
-  if (!ctx) throw new Error('useToast must be used within a ToastProvider');
+  if (!ctx) throw new Error("useToast must be used within a ToastProvider");
   return ctx;
 };
 
@@ -78,7 +106,10 @@ export interface ToastProps {
   };
 }
 
-const severityStyles: Record<ToastSeverity, { filled: string; outlined: string; standard: string }> = SeverityStyles
+const severityStyles: Record<
+  ToastSeverity,
+  { filled: string; outlined: string; standard: string }
+> = SeverityStyles;
 const Icons: Record<ToastSeverity, React.ReactNode> = {
   success: <SuccessIcon />,
   error: <ErrorIcon />,
@@ -87,8 +118,23 @@ const Icons: Record<ToastSeverity, React.ReactNode> = {
   loading: <LoadingIcon />,
 };
 
-const Toast: React.FC<ToastProps> = ({ item, onClose, paused = false, classes }) => {
+const Toast: React.FC<ToastProps> = ({
+  item,
+  onClose,
+  paused = false,
+  classes,
+}) => {
   const { id, message, severity, variant, action, autoHideDuration } = item;
+  const { showSuccess, showError } = useMascot();
+
+  //trigger mascot based on toast severity
+  useEffect(() => {
+    if (severity === "success") {
+      showSuccess();
+    } else if (severity === "error") {
+      showError();
+    }
+  }, [severity, showSuccess, showError]);
 
   useEffect(() => {
     if (autoHideDuration === null || paused) return;
@@ -103,14 +149,28 @@ const Toast: React.FC<ToastProps> = ({ item, onClose, paused = false, classes })
       onClick={() => onClose(id)}
       role="alert"
       className={[
-        'pointer-events-auto flex items-center gap-3 rounded-md shadow-lg px-4 py-3',
+        "pointer-events-auto flex items-center gap-3 rounded-md shadow-lg px-4 py-3",
         styles,
         classes?.root,
-      ].filter(Boolean).join(' ')}
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
-      <span className={['shrink-0', classes?.icon].filter(Boolean).join(' ')}>{Icons[severity]}</span>
-      <div className={['text-sm leading-snug', classes?.message].filter(Boolean).join(' ')}>{message}</div>
-      {action && <div className={['ml-auto', classes?.action].filter(Boolean).join(' ')}>{action}</div>}
+      <span className={["shrink-0", classes?.icon].filter(Boolean).join(" ")}>
+        {Icons[severity]}
+      </span>
+      <div
+        className={["text-sm leading-snug", classes?.message]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        {message}
+      </div>
+      {action && (
+        <div className={["ml-auto", classes?.action].filter(Boolean).join(" ")}>
+          {action}
+        </div>
+      )}
     </div>
   );
 };
@@ -122,16 +182,16 @@ export const ToastContainer: React.FC<{
   anchorOrigin: AnchorOrigin;
   dense?: boolean;
   pauseOnHover?: boolean;
-  classes?: ToastProviderProps['classes'];
+  classes?: ToastProviderProps["classes"];
 }> = ({ toasts, onClose, anchorOrigin, dense, pauseOnHover, classes }) => {
   const position = useMemo(() => {
-    const v = anchorOrigin.vertical === 'top' ? 'top-4' : 'bottom-4';
+    const v = anchorOrigin.vertical === "top" ? "top-4" : "bottom-4";
     const h =
-      anchorOrigin.horizontal === 'left'
-        ? 'left-4'
-        : anchorOrigin.horizontal === 'right'
-        ? 'right-4'
-        : 'left-1/2 -translate-x-1/2';
+      anchorOrigin.horizontal === "left"
+        ? "left-4"
+        : anchorOrigin.horizontal === "right"
+        ? "right-4"
+        : "left-1/2 -translate-x-1/2";
     return `${v} ${h}`;
   }, [anchorOrigin]);
 
@@ -140,24 +200,31 @@ export const ToastContainer: React.FC<{
   return (
     <div
       className={[
-        'pointer-events-none fixed z-[9999]',
+        "pointer-events-none fixed z-[9999]",
         position,
-        'flex flex-col',
-        anchorOrigin.vertical === 'top' ? 'items-stretch' : 'items-stretch',
-        dense ? 'gap-2' : 'gap-3',
+        "flex flex-col",
+        anchorOrigin.vertical === "top" ? "items-stretch" : "items-stretch",
+        dense ? "gap-2" : "gap-3",
         classes?.container,
-      ].filter(Boolean).join(' ')}
+      ]
+        .filter(Boolean)
+        .join(" ")}
       onMouseEnter={pauseOnHover ? () => setPaused(true) : undefined}
       onMouseLeave={pauseOnHover ? () => setPaused(false) : undefined}
     >
       {toasts.map((t) => (
         <div key={t.id} className="pointer-events-auto">
-          <Toast item={t} onClose={onClose} paused={paused} classes={{
-            root: classes?.item,
-            icon: classes?.icon,
-            message: classes?.message,
-            action: classes?.action,
-          }} />
+          <Toast
+            item={t}
+            onClose={onClose}
+            paused={paused}
+            classes={{
+              root: classes?.item,
+              icon: classes?.icon,
+              message: classes?.message,
+              action: classes?.action,
+            }}
+          />
         </div>
       ))}
     </div>
@@ -168,7 +235,7 @@ export const ToastContainer: React.FC<{
 export const ToastProvider: React.FC<PropsWithChildren<ToastProviderProps>> = ({
   children,
   max = 4,
-  anchorOrigin = { vertical: 'top', horizontal: 'right' },
+  anchorOrigin = { vertical: "top", horizontal: "right" },
   dense = false,
   pauseOnHover = true,
   classes,
@@ -180,38 +247,46 @@ export const ToastProvider: React.FC<PropsWithChildren<ToastProviderProps>> = ({
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  const enqueue = useCallback<ToastContextType['enqueue']>((message, options) => {
-    const id = options?.replaceId ?? `t_${Date.now()}_${counter.current++}`;
-    const defaultDuration = options?.severity === 'loading' ? null : 3000;
-    setToasts((prev) => {
-      const base: ToastItem = {
-        id,
-        message,
-        severity: options?.severity ?? 'info',
-        variant: options?.variant ?? 'filled',
-        autoHideDuration:
-          options?.autoHideDuration === undefined ? defaultDuration : options.autoHideDuration,
-        action: options?.action ?? null,
-        replaceId: options?.replaceId ?? id,
-      } as ToastItem;
+  const enqueue = useCallback<ToastContextType["enqueue"]>(
+    (message, options) => {
+      const id = options?.replaceId ?? `t_${Date.now()}_${counter.current++}`;
+      const defaultDuration = options?.severity === "loading" ? null : 3000;
+      setToasts((prev) => {
+        const base: ToastItem = {
+          id,
+          message,
+          severity: options?.severity ?? "info",
+          variant: options?.variant ?? "filled",
+          autoHideDuration:
+            options?.autoHideDuration === undefined
+              ? defaultDuration
+              : options.autoHideDuration,
+          action: options?.action ?? null,
+          replaceId: options?.replaceId ?? id,
+        } as ToastItem;
 
-      // Replace existing
-      const next = prev.filter((t) => t.id !== options?.replaceId);
-      next.unshift(base);
-      return next.slice(0, max);
-    });
-    return id;
-  }, [max]);
+        const next = prev.filter((t) => t.id !== options?.replaceId);
+        next.unshift(base);
+        return next.slice(0, max);
+      });
+      return id;
+    },
+    [max]
+  );
 
-  const api = useMemo<ToastContextType>(() => ({
-    enqueue,
-    close,
-    success: (m, o) => enqueue(m, { ...o, severity: 'success' }),
-    error: (m, o) => enqueue(m, { ...o, severity: 'error' }),
-    warning: (m, o) => enqueue(m, { ...o, severity: 'warning' }),
-    info: (m, o) => enqueue(m, { ...o, severity: 'info' }),
-    loading: (m, o) => enqueue(m, { ...o, severity: 'loading', autoHideDuration: null }),
-  }), [enqueue, close]);
+  const api = useMemo<ToastContextType>(
+    () => ({
+      enqueue,
+      close,
+      success: (m, o) => enqueue(m, { ...o, severity: "success" }),
+      error: (m, o) => enqueue(m, { ...o, severity: "error" }),
+      warning: (m, o) => enqueue(m, { ...o, severity: "warning" }),
+      info: (m, o) => enqueue(m, { ...o, severity: "info" }),
+      loading: (m, o) =>
+        enqueue(m, { ...o, severity: "loading", autoHideDuration: null }),
+    }),
+    [enqueue, close]
+  );
 
   // Portal to body to avoid clipping
   const portal = (
@@ -233,5 +308,5 @@ export const ToastProvider: React.FC<PropsWithChildren<ToastProviderProps>> = ({
   );
 };
 
-export default Toast;
+
 
