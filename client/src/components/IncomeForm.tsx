@@ -111,7 +111,6 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           type="date"
           value={formData.date ?? ""}
           onChange={(e) => handleChange("date", e.target.value)}
-          required
           fullWidth
         />
 
@@ -119,7 +118,6 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           label="Source"
           value={formData.source ?? ""}
           onChange={(e) => handleChange("source", e.target.value)}
-          required
           fullWidth
         />
 
