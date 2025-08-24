@@ -1,8 +1,18 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { ToastProvider } from "./ui";
 import { IncomesPage } from "./pages/IncomesPage";
+import Sidebar from "./components/common/Sidebar";
+import Dashboard from "./pages/Dashboard";
+import DashboardHeader from "./components/common/Header";
+import BackgroundImage from "./components/common/BackgroundImage";
 
 function App() {
+  /*
+    TODO: check auth then redirect to /login when not authenticated
+    TODO: use different layout for auth page and dashboard page
+  */
+  const location = useLocation();
+
   return (
     <ToastProvider
       max={4}
@@ -10,9 +20,18 @@ function App() {
       pauseOnHover={true}
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
     >
-      <div className="App min-h-screen bg-gray-50">
+      <div className="App min-h-screen relative">
+        {location.pathname.includes("/login") ||
+        location.pathname.includes("/register") ? null : (
+          <>
+            <BackgroundImage />
+            <DashboardHeader />
+            <Sidebar />
+          </>
+        )}
+
         <Routes>
-          <Route path="/" element={<Navigate to="/incomes" replace />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/incomes" element={<IncomesPage />} />
         </Routes>
       </div>

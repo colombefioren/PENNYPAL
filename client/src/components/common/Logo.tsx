@@ -1,9 +1,11 @@
+import { assets } from "../../assets/images";
+
 function Logo({ className }: { className?: string }) {
   return (
     <img
-      src="https://placehold.co/300x100?text=LOGO"
+      src={assets.logoDark}
       alt="Pennypal"
-      className={` ${className}`}
+      className={` object-cover ${className}`}
     />
   );
 }
