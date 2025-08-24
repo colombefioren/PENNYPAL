@@ -12,7 +12,7 @@ const EXPRESSION_FRAMES: Record<MascotExpression, number> = {
   error: 3,
 };
 
-export const Mascot: React.FC<MascotProps> = ({ className = "" }) => {
+const Mascot: React.FC<MascotProps> = ({ className = "" }) => {
   const { expression } = useMascotStore();
   const [currentFrame, setCurrentFrame] = useState(1);
   const [prevExpression, setPrevExpression] =
@@ -94,3 +94,5 @@ export const Mascot: React.FC<MascotProps> = ({ className = "" }) => {
     </div>
   );
 };
+
+export default Mascot;
