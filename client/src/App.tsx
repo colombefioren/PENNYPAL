@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { ToastProvider } from "./ui";
 import { IncomesPage } from "./pages/IncomesPage";
 
-function App() {
+const App = () => {
   return (
     <ToastProvider
       max={4}
@@ -18,6 +18,6 @@ function App() {
       </div>
     </ToastProvider>
   );
-}
+};
 
 export default App;
