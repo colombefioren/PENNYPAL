@@ -54,3 +54,4 @@ jspm_packages/
 Thumbs.db
 
 .vercel/
+/generated/prisma
