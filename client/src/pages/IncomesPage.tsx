@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import type { Income } from '../types/Income';
 import { IncomeList } from '../components/IncomeList';
 import { IncomeForm } from '../components/IncomeForm';
@@ -12,6 +12,7 @@ export const IncomesPage: React.FC = () => {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [incomeToDelete, setIncomeToDelete] = useState<Income | null>(null);
   const toast = useToast();
+  const incomeListRef = useRef<{ refetch: () => void }>(null);
 
   const handleEdit = (income: Income) => {
     setEditingIncome(income);
@@ -31,6 +32,8 @@ export const IncomesPage: React.FC = () => {
       toast.success('Income deleted successfully');
       setDeleteConfirmOpen(false);
       setIncomeToDelete(null);
+      //refresh after every operations
+      incomeListRef.current?.refetch();
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to delete income';
       toast.error(message);
@@ -40,6 +43,8 @@ export const IncomesPage: React.FC = () => {
   const handleSave = () => {
     setEditingIncome(undefined);
     setShowForm(false);
+    //same
+    incomeListRef.current?.refetch();
   };
 
   const handleCancel = () => {
@@ -77,6 +82,7 @@ export const IncomesPage: React.FC = () => {
         </div>
 
         <IncomeList
+          ref={incomeListRef}
           startDate={dateFilter.start}
           endDate={dateFilter.end}
           onEdit={handleEdit}
