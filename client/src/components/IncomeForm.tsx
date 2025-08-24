@@ -21,6 +21,10 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
   onCancel,
   open,
 }) => {
+  const { categories, loading: categoriesLoading } = useIncomeCategories();
+  const [saving, setSaving] = useState(false);
+  const toast = useToast();
+
   const [formData, setFormData] = useState<
     CreateIncomeRequest | UpdateIncomeRequest
   >({
@@ -30,13 +34,9 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
       : new Date().toISOString().split("T")[0],
     source: income?.source || "",
     description: income?.description || "",
-    category_id: income?.category_id || 0,
+    category_id: income?.category_id || 1,
   });
 
-  const { categories, loading: categoriesLoading } = useIncomeCategories();
-  const [saving, setSaving] = useState(false);
-  const toast = useToast();
-  
   useEffect(() => {
     if (income) {
       setFormData({
@@ -52,10 +52,10 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
         date: new Date().toISOString().split("T")[0],
         source: "",
         description: "",
-        category_id: 0,
+        category_id: 1,
       });
     }
-  }, [income, open]);
+  }, [income, open]); //
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

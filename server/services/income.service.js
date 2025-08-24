@@ -28,7 +28,7 @@ const getIncomes = async (userId, filters = {}) => {
     include: { category: true },
     orderBy: [
       { date: "desc" },
-      { created_at: "desc" }, // might change { income_id: "desc" } if that doesnt work
+      { creation_date: "desc" }, // might change { income_id: "desc" } if that doesnt work
     ],
   });
 };
