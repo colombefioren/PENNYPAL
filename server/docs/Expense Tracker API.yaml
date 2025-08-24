@@ -224,7 +224,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: [amount, category_id]
+              required: [amount]
               properties:
                 amount:
                   type: number

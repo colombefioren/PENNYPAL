@@ -6,7 +6,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 export const createIncome = asyncHandler(async (req, res) => {
   const { amount, date, source, description, category_id } = req.body;
 
-  if (!amount || !category_id) {
+  if (!amount) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -14,9 +14,12 @@ export const createIncome = asyncHandler(async (req, res) => {
     amount: parseFloat(amount),
     source: source || "",
     description: description || "",
-    category: { connect: { category_id: parseInt(category_id) } },
+    category: { connect: { category_id: 1 } },
   };
 
+  if (category_id) {
+    incomeData.category = { connect: { category_id: parseInt(category_id) } };
+  }
   if (date) {
     const parsedDate = new Date(date);
     if (!isNaN(parsedDate.getTime())) {
@@ -101,7 +104,7 @@ export const getIncomeCategoriesByUser = asyncHandler(async (req, res) => {
 });
 
 export const createIncomeCategory = asyncHandler(async (req, res) => {
-  const { category_name, icon_url, icon_emoji } = req.body;
+  const { category_name, icon_url } = req.body;
 
   if (!category_name) {
     return res.status(400).json({ error: "Category name is required" });
@@ -113,7 +116,6 @@ export const createIncomeCategory = asyncHandler(async (req, res) => {
       {
         category_name,
         icon_url,
-        icon_emoji,
       }
     );
     res.status(201).json(category);
@@ -124,7 +126,7 @@ export const createIncomeCategory = asyncHandler(async (req, res) => {
 
 export const updateIncomeCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { category_name, icon_url, icon_emoji } = req.body;
+  const { category_name, icon_url } = req.body;
 
   if (!category_name) {
     return res.status(400).json({ error: "Category name is required" });
@@ -134,7 +136,7 @@ export const updateIncomeCategory = asyncHandler(async (req, res) => {
     const category = await incomeService.updateIncomeCategory(
       id,
       req.user.user_id,
-      { category_name, icon_url, icon_emoji }
+      { category_name, icon_url }
     );
     res.json(category);
   } catch (error) {
