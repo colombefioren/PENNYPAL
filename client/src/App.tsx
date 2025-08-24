@@ -5,6 +5,7 @@ import Sidebar from "./components/common/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import DashboardHeader from "./components/common/Header";
 import BackgroundImage from "./components/common/BackgroundImage";
+import { CreateIncomePage } from "./pages/CreateIncomePage";
 
 function App() {
   /*
@@ -32,6 +33,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/incomes" element={<IncomesPage />} />
+          <Route path="/incomes/new" element={<CreateIncomePage />} />
+
         </Routes>
       </div>
     </ToastProvider>

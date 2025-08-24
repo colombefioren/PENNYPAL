@@ -17,7 +17,6 @@ export const CreateIncomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-dark via-primary to-primary-light p-6">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="glass-morphism rounded-2xl p-8 mb-8">
           <div className="flex items-center gap-4 mb-6">
             <Button
@@ -38,7 +37,6 @@ export const CreateIncomePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Income Form */}
         <div className="glass-card rounded-2xl p-8">
           <IncomeForm onSave={handleSave} onCancel={handleCancel} open={true} />
         </div>

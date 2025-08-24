@@ -1,7 +1,7 @@
 import React from "react";
 import type { Income } from "../types/Income";
 import { useIncomes } from "../hooks/useIncomes";
-import { Button, Skeleton, Chip } from "../ui";
+import { Button, Chip } from "../ui";
 
 interface IncomeListProps {
   startDate?: string;
@@ -17,16 +17,6 @@ export const IncomeList: React.FC<IncomeListProps> = ({
   onDelete,
 }) => {
   const { incomes, loading, error, refetch } = useIncomes(startDate, endDate);
-
-  if (loading) {
-    return (
-      <div className="space-y-3">
-        {[...Array(5)].map((_, i) => (
-          <Skeleton key={i} variant="rect" height={60} rounded="rounded-md" />
-        ))}
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -45,7 +35,15 @@ export const IncomeList: React.FC<IncomeListProps> = ({
           Refresh
         </Button>
       </div>
-
+      {loading && (
+        <div className="w-full h-full flex items-center justify-center">
+          <div
+            className="size-10 mx-auto animate-spin rounded-full border-4 border-primary-light border-t-transparent"
+            role="status"
+            aria-label="Loading"
+          ></div>
+        </div>
+      )}
       {incomes.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
           No incomes found for the selected period
