@@ -114,7 +114,7 @@ export class IncomeService {
     name: string
   ): Promise<IncomeCategory> {
     try {
-      const response = await DefaultService.putIncomesCategories(id, { category_name: name });
+      const response = await DefaultService.putIncomesCustomCategories(id, { category_name: name });
       return response as IncomeCategory;
     } catch (error) {
       console.error(`Error updating income category ${id}:`, error);
@@ -125,7 +125,7 @@ export class IncomeService {
   //DELETE category
   static async deleteIncomeCategory(id: string) {
     try {
-      await DefaultService.deleteCategories(id);
+      await DefaultService.deleteIncomesCustomCategories(id);
     } catch (error) {
       console.error(`Error deleting income category ${id}:`, error);
       throw new Error("Failed to delete income category");

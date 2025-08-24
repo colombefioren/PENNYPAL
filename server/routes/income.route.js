@@ -6,9 +6,9 @@ const router = Router();
 //INCOME CATEGORY
 router.get('/categories', getIncomeCategories);
 router.get('/custom-categories', getIncomeCategoriesByUser)
-router.post('/categories', createIncomeCategory);
-router.put('/categories/:id', updateIncomeCategory);
-router.delete('/categories/:id', deleteIncomeCategory);
+router.post('/custom-categories', createIncomeCategory);
+router.put('/custom-categories/:id', updateIncomeCategory);
+router.delete('/custom-categories/:id', deleteIncomeCategory);
 
 //INCOME
 router.get('/', getIncomes);

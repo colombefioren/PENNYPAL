@@ -207,7 +207,7 @@ export class DefaultService {
      * @returns any Income category updated
      * @throws ApiError
      */
-    public static putIncomesCategories(
+    public static putIncomesCustomCategories(
         id: string,
         requestBody: {
             category_name: string;
@@ -216,7 +216,7 @@ export class DefaultService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/incomes/categories/{id}',
+            url: '/incomes/custom-categories/{id}',
             path: {
                 'id': id,
             },
@@ -230,12 +230,12 @@ export class DefaultService {
      * @returns void
      * @throws ApiError
      */
-    public static deleteIncomesCategories(
+    public static deleteIncomesCustomCategories(
         id: string,
     ): CancelablePromise<void> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/incomes/categories/{id}',
+            url: '/incomes/custom-categories/{id}',
             path: {
                 'id': id,
             },

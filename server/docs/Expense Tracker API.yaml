@@ -173,7 +173,7 @@ paths:
       responses:
         "201":
           description: Income category created
-  /incomes/categories/{id}:
+  /incomes/custom-categories/{id}:
     parameters:
       - in: path
         name: id
