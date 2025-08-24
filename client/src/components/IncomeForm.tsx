@@ -5,6 +5,7 @@ import type {
 } from "../types/Income";
 import { useIncomeCategories } from "../hooks/useIncomeCategories";
 import { Button, TextField, Select, Dialog, useToast, Skeleton } from "../ui";
+import { useMascot } from "../hooks/useMascot";
 
 
 interface IncomeFormProps {
@@ -23,6 +24,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
   const { categories, loading: categoriesLoading } = useIncomeCategories();
   const [saving, setSaving] = useState(false);
   const toast = useToast();
+  const {showSuccess, showError} = useMascot();
 
   const [formData, setFormData] = useState<IncomeFormData>({
     amount: income?.amount || 0,
@@ -60,10 +62,12 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
 
     try {
       await onSave(formData);
+      showSuccess();
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Failed to save income";
       toast.error(message);
+      showError();
     } finally {
       setSaving(false);
     }

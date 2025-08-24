@@ -308,5 +308,4 @@ export const ToastProvider: React.FC<PropsWithChildren<ToastProviderProps>> = ({
   );
 };
 
-
-
+export default Toast;
