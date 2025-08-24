@@ -108,5 +108,3 @@ export const IncomeList = forwardRef<IncomeListRef, IncomeListProps>(
     );
   }
 );
-
-IncomeList.displayName = "IncomeList";
