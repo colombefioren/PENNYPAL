@@ -77,7 +77,7 @@ export class IncomeService {
   //GET ALL income categories (custom and system)
   static async getIncomeCategories() {
     try {
-      const response = await DefaultService.getCategories();
+      const response = await DefaultService.getIncomesCategories();
 
       return response as IncomeCategory[];
     } catch (error) {
@@ -89,8 +89,8 @@ export class IncomeService {
   //GET custom categories
   static async getCustomIncomeCategories() {
     try {
-      const allCategories = await this.getIncomeCategories();
-      return allCategories.filter((category) => category.is_custom);
+      const response = await DefaultService.getIncomesCustomCategories();
+      return response as IncomeCategory[];
     } catch (error) {
       console.error("Error fetching custom income categories:", error);
       throw new Error("Failed to fetch custom income categories");
@@ -100,7 +100,7 @@ export class IncomeService {
   //POST new category
   static async createIncomeCategory(name: string) {
     try {
-      const response = await DefaultService.postCategories({ name });
+      const response = await DefaultService.postIncomesCustomCategories({ category_name : name });
       return response as IncomeCategory;
     } catch (error) {
       console.error("Error creating income category:", error);
@@ -114,7 +114,7 @@ export class IncomeService {
     name: string
   ): Promise<IncomeCategory> {
     try {
-      const response = await DefaultService.putCategories(id, { name });
+      const response = await DefaultService.putIncomesCategories(id, { category_name: name });
       return response as IncomeCategory;
     } catch (error) {
       console.error(`Error updating income category ${id}:`, error);
