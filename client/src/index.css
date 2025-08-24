@@ -8,7 +8,6 @@
   --color-light: #e0e9f5;
 }
 
-
 @layer base {
   button {
     border-radius: 8px;
@@ -31,6 +30,13 @@
 
 /* Minimal utilities */
 @layer utilities {
-  @keyframes ripple { to { opacity: 0; transform: translate(-50%, -50%) scale(8); } }
-  .btn-icon { @apply rounded-full p-3; }
+  @keyframes ripple {
+    to {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(8);
+    }
+  }
+  .btn-icon {
+    @apply rounded-full p-3;
+  }
 }

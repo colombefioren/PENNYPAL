@@ -53,10 +53,9 @@ export const IncomesPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Income Management</h1>
-        <Button onClick={handleNewIncome} size="large">
+    <div className="p-6 max-w-4xl mx-auto relative z-2">
+      <div className="flex mt-20 justify-between items-center mb-6">
+        <Button className='text-white border-white border' onClick={handleNewIncome} size="large">
           Add New Income
         </Button>
       </div>
