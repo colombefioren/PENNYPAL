@@ -10,7 +10,7 @@ const DashboardHeader = () => {
       <div className="flex flex-col">
         <h1 className="text-2xl font-bold text-white">
           Hi,{" "}
-          <span className="bg-gradient-to-r from-amber-300 to-amber-400 bg-clip-text text-transparent">
+          <span className="bg-accent bg-clip-text text-transparent">
             John
           </span>
         </h1>
