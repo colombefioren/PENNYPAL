@@ -4,7 +4,7 @@ import ThemeToggle from "../ThemeToggle";
 import { ChevronDown } from "lucide-react";
 import { DateDropdown, NotificationBell, SearchInput } from "./components";
 
-function Header() {
+const DashboardHeader = () => {
   return (
     <header className="flex justify-between items-center fixed top-6 left-25 right-4 z-30 px-6">
       <div className="flex flex-col">
@@ -14,7 +14,9 @@ function Header() {
             John
           </span>
         </h1>
-        <p className="text-indigo-100/90 font-light">Track all your transactions with PennyPal</p>
+        <p className="text-indigo-100/90 font-light">
+          Track all your transactions with PennyPal
+        </p>
       </div>
 
       <div className="flex items-center gap-5">
@@ -58,6 +60,6 @@ function Header() {
       </div>
     </header>
   );
-}
+};
 
-export default Header;
+export default DashboardHeader;
