@@ -3,7 +3,7 @@ import { ToastProvider } from "./ui";
 import { IncomesPage } from "./pages/IncomesPage";
 import Sidebar from "./components/common/Sidebar";
 import Dashboard from "./pages/Dashboard";
-import DashboardHeader from "./components/common/Header";
+import DashboardHeader from "./components/common/Header/Header";
 import BackgroundImage from "./components/common/BackgroundImage";
 import { CreateIncomePage } from "./pages/CreateIncomePage";
 import { EditIncomePage } from "./pages/EditIncomePage";
