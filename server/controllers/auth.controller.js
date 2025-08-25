@@ -1,5 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { signupUser, loginUser, getPublicUser } from '../services/auth.service.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import { BadRequestError } from '../utils/errors.js';
+import isStrongPassword from 'validator/lib/isStrongPassword.js';
 
 const TOKEN_COOKIE_NAME = 'token';
 
@@ -20,72 +23,31 @@ const setAuthCookie = (res, payload) => {
   });
 }
 
-export const signup = async (req, res) => {
-  try {
-    const { email, password, username, firstname, lastname } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password are required' });
-    }
-    const emailOk = /.+@.+\..+/.test(email);
-    if (!emailOk) {
-      return res.status(400).json({ error: 'Invalid email format' });
-    }
-    if (String(password).length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters' });
-    }
-
-    const user = await signupUser({ email, password, username, firstname, lastname });
-
-    setAuthCookie(res, { user_id: user.user_id, email: user.email });
-    return res.status(201).json(user);
-  } catch (err) {
-    const status = err.status || 500;
-    if (status !== 500) return res.status(status).json({ error: err.message });
-    console.error('Signup error:', err);
-    return res.status(500).json({ error: 'Failed to sign up' });
+export const signup = asyncHandler(async (req, res) => {
+  const { email, password, username, firstname, lastname } = req.body;
+  if (!email || !password) throw new BadRequestError('Email and password are required');
+  if (!isStrongPassword(String(password), { minLength: 6, minLowercase: 0, minUppercase: 1, minNumbers: 1, minSymbols: 0 })) {
+    throw new BadRequestError('Password must be at least 6 characters and include at least one uppercase letter and one number');
   }
-};
+  const user = await signupUser({ email: req.body.email, password, username, firstname, lastname });
+  setAuthCookie(res, { user_id: user.user_id, email: user.email });
+  return res.status(201).json(user);
+});
 
-export const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password are required' });
-    }
-    const emailOk = /.+@.+\..+/.test(email);
-    if (!emailOk) {
-      return res.status(400).json({ error: 'Invalid email format' });
-    }
+export const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) throw new BadRequestError('Email and password are required');
+  const publicUser = await loginUser({ email: req.body.email, password });
+  setAuthCookie(res, { user_id: publicUser.user_id, email: publicUser.email });
+  return res.json(publicUser);
+});
 
-    const publicUser = await loginUser({ email, password });
+export const me = asyncHandler(async (req, res) => {
+  const user = await getPublicUser(req.user.user_id);
+  return res.json(user);
+});
 
-    setAuthCookie(res, { user_id: publicUser.user_id, email: publicUser.email });
-    return res.json(publicUser);
-  } catch (err) {
-    const status = err.status || 500;
-    if (status !== 500) return res.status(status).json({ error: err.message });
-    console.error('Login error:', err);
-    return res.status(500).json({ error: 'Failed to log in' });
-  }
-};
-
-export const me = async (req, res) => {
-  try {
-    const user = await getPublicUser(req.user.user_id);
-    return res.json(user);
-  } catch (err) {
-    const status = err.status || 500;
-    if (status !== 500) return res.status(status).json({ error: err.message });
-    console.error('Me error:', err);
-    return res.status(500).json({ error: 'Failed to load profile' });
-  }
-};
-
-export const logout = async (_req, res) => {
-  try {
-    res.clearCookie(TOKEN_COOKIE_NAME, { path: '/', sameSite: 'lax' });
-    return res.status(204).send();
-  } catch {
-    return res.status(204).send();
-  }
-};
+export const logout = asyncHandler(async (_req, res) => {
+  res.clearCookie(TOKEN_COOKIE_NAME, { path: '/', sameSite: 'lax' });
+  return res.status(204).send();
+});
