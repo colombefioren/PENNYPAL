@@ -18,7 +18,7 @@ export default function Sidebar() {
   return (
     <div className="fixed left-0 top-1/2 transform -translate-y-1/2 z-50">
       <div className="group/sidebar relative h-[70vh] max-h-[600px] w-16 hover:w-56 transition-all duration-300">
-        <div className="absolute inset-0 rounded-tr-[4rem] rounded-br-[4rem] py-6 overflow-hidden bg-white/10 backdrop-blur-2xl transition-all duration-300">
+        <div className="absolute inset-0 rounded-tr-[4rem] rounded-br-[4rem] py-10 overflow-hidden bg-white/10 backdrop-blur-2xl transition-all duration-300">
           <nav className="h-full px-2 py-4">
             <div className="flex h-full flex-col justify-between">
               <div className="flex flex-col gap-3">
