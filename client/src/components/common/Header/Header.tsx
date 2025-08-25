@@ -3,10 +3,26 @@ import { Link } from "react-router-dom";
 import ThemeToggle from "../ThemeToggle";
 import { ChevronDown } from "lucide-react";
 import { DateDropdown, NotificationBell, SearchInput } from "./components";
+import { useState, useEffect } from "react";
 
 const DashboardHeader = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="flex justify-between items-center fixed top-6 left-25 right-4 z-30 px-6">
+    <header
+      className={`flex justify-between items-center fixed top-4 left-25 right-10 z-30 px-6 py-3 rounded-2xl transition-all duration-500 ${
+        isScrolled ? "bg-white/10 backdrop-blur-sm shadow-lg" : "bg-transparent"
+      }`}
+    >
       <div className="flex flex-col">
         <h1 className="text-2xl font-bold text-white">
           Hi,{" "}
@@ -33,7 +49,7 @@ const DashboardHeader = () => {
             <div className="relative">
               <img
                 src={assets.userPlaceholder}
-                className="w-13 h-13 object-cover relative z-10 group-hover:border-amber-200/50 transition-all duration-300"
+                className="w-13 h-13 object-cover relative z-10 group-hover:border-amber-200/50 transition-all duration-300 rounded-full"
                 alt="Profile"
               />
               <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-white z-20"></div>
