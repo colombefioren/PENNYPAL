@@ -8,7 +8,7 @@ const NotificationBell = ({hasNotifications,notifNumber} : {hasNotifications : b
     >
       <Bell size={24}/>
       {hasNotifications && (
-        <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">
+        <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">
           {notifNumber}
         </span>
       )}
