@@ -1,30 +1,6 @@
 import bcrypt from 'bcrypt';
 import { prisma } from '../db/prisma.js';
-
-class HttpError extends Error {
-  constructor(message, status = 500) {
-    super(message);
-    this.status = status;
-  }
-}
-
-export class ConflictError extends HttpError {
-  constructor(message = 'Conflict') {
-    super(message, 409);
-  }
-}
-
-export class AuthError extends HttpError {
-  constructor(message = 'Unauthorized') {
-    super(message, 401);
-  }
-}
-
-export class NotFoundError extends HttpError {
-  constructor(message = 'Not Found') {
-    super(message, 404);
-  }
-}
+import { ConflictError, UnauthorizedError, NotFoundError } from '../utils/errors.js';
 
 const publicUserSelect = {
   user_id: true,
@@ -55,10 +31,10 @@ export const signupUser = async ({ email, password, username, firstname, lastnam
 
 export const loginUser = async ({ email, password }) => {
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) throw new AuthError('Invalid credentials');
+  if (!user) throw new UnauthorizedError('Invalid credentials');
 
   const ok = await bcrypt.compare(password, user.hashed_password);
-  if (!ok) throw new AuthError('Invalid credentials');
+  if (!ok) throw new UnauthorizedError('Invalid credentials');
 
   const publicUser = {
     user_id: user.user_id,
