@@ -7,8 +7,8 @@ interface MascotProps {
 }
 
 const EXPRESSION_FRAMES: Record<MascotExpression, number> = {
-  idle: 11,
-  success: 4,
+  idle: 7,
+  success: 3,
   error: 3,
 };
 
