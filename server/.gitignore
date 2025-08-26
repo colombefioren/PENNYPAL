@@ -53,4 +53,7 @@ jspm_packages/
 .DS_Store
 Thumbs.db
 
+.vercel/
 /generated/prisma
+cookies.txt
+
