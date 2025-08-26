@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import type { Income, IncomeFormData } from "../types/Income";
 import { useIncomeCategories } from "../hooks/useIncomeCategories";
-import { Button, TextField, Select, Dialog, Skeleton } from "../ui";
+import { Button, TextField, Select, Dialog, Skeleton, DatePicker } from "../ui";
 import { useMascot } from "../hooks/useMascot";
 
 interface IncomeFormProps {
@@ -77,6 +77,13 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
     }));
   };
 
+  const handleDateChange = (date: Date | null) => {
+    if (date) {
+      const formattedDate = date.toISOString().split("T")[0];
+      handleChange("date", formattedDate);
+    }
+  };
+
   return (
     <Dialog
       open={open}
@@ -93,12 +100,11 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           fullWidth
         />
 
-        <TextField
-          label="Date"
-          type="date"
-          value={formData.date ?? ""}
-          onChange={(e) => handleChange("date", e.target.value)}
-          fullWidth
+        <DatePicker
+          value={formData.date ? new Date(formData.date) : null}
+          onChange={handleDateChange}
+          label="Select date"
+          size="medium"
         />
 
         <TextField

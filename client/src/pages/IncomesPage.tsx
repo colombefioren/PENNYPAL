@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import type { Income } from "../types/Income";
 import { IncomeList } from "../components/IncomeList";
-import { Button, TextField, Dialog, useToast } from "../ui";
+import { Button, Dialog, useToast, DatePicker } from "../ui";
 import { IncomeService } from "../services/IncomeService";
 import { useNavigate } from "react-router-dom";
 
@@ -46,6 +46,20 @@ export const IncomesPage = () => {
     navigate("/incomes/new");
   };
 
+  const handleStartDateChange = (date: Date | null) => {
+    setDateFilter((prev) => ({
+      ...prev,
+      start: date ? date.toISOString().split("T")[0] : undefined,
+    }));
+  };
+
+  const handleEndDateChange = (date: Date | null) => {
+    setDateFilter((prev) => ({
+      ...prev,
+      end: date ? date.toISOString().split("T")[0] : undefined,
+    }));
+  };
+
   return (
     <div className="p-6 max-w-4xl mx-auto relative z-2">
       <div className="flex pt-20 justify-between items-center mb-6">
@@ -60,28 +74,20 @@ export const IncomesPage = () => {
 
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <TextField
-            label="From Date"
-            type="date"
-            value={dateFilter.start || ""}
-            onChange={(e) =>
-              setDateFilter((prev) => ({
-                ...prev,
-                start: e.target.value || undefined,
-              }))
-            }
-          />
-          <TextField
-            label="To Date"
-            type="date"
-            value={dateFilter.end || ""}
-            onChange={(e) =>
-              setDateFilter((prev) => ({
-                ...prev,
-                end: e.target.value || undefined,
-              }))
-            }
-          />
+           
+            <DatePicker
+              value={dateFilter.start ? new Date(dateFilter.start) : null}
+              onChange={handleStartDateChange}
+              label="Start Date"
+              size="medium"
+            />
+          
+            <DatePicker
+              value={dateFilter.end ? new Date(dateFilter.end) : null}
+              onChange={handleEndDateChange}
+              label="End Date"
+              size="medium"
+            />
         </div>
 
         <IncomeList
