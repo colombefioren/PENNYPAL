@@ -6,8 +6,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 export const createIncome = asyncHandler(async (req, res) => {
   const { amount, date, source, description } = req.body;
 
-  if (!amount) {
-    return res.status(400).json({ error: "Missing required fields" });
+  if (!amount || !date) {
+    return res
+      .status(400)
+      .json({ error: "Missing required fields: amount and date are required" });
   }
 
   const incomeData = {
@@ -16,19 +18,18 @@ export const createIncome = asyncHandler(async (req, res) => {
     description: description || "",
   };
 
-  if (date) {
-    const parsedDate = new Date(date);
-    if (!isNaN(parsedDate.getTime())) {
-      incomeData.date = parsedDate;
-    } else {
-      return res.status(400).json({ error: "Invalid date format" });
-    }
+  const parsedDate = new Date(date);
+  if (!isNaN(parsedDate.getTime())) {
+    incomeData.date = parsedDate;
   } else {
-    incomeData.date = new Date();
+    return res.status(400).json({ error: "Invalid date format" });
   }
 
   try {
-    const income = await incomeService.createIncome(req.user.id, incomeData);
+    const income = await incomeService.createIncome(
+      req.user.user_id,
+      incomeData
+    );
     res.status(201).json(income);
   } catch (error) {
     console.error("Error creating income:", error);
@@ -59,7 +60,7 @@ export const getIncomes = asyncHandler(async (req, res) => {
   }
 
   try {
-    const incomes = await incomeService.getIncomes(req.user.id, filters);
+    const incomes = await incomeService.getIncomes(req.user.user_id, filters);
     res.json(incomes);
   } catch (error) {
     console.error("Error fetching incomes:", error);
@@ -75,7 +76,7 @@ export const getIncome = asyncHandler(async (req, res) => {
   }
 
   try {
-    const income = await incomeService.getIncomeById(id, req.user.id);
+    const income = await incomeService.getIncomeById(id, req.user.user_id);
 
     if (!income) {
       return res.status(404).json({ error: "Income not found" });
@@ -113,7 +114,11 @@ export const updateIncome = asyncHandler(async (req, res) => {
   }
 
   try {
-    const income = await incomeService.updateIncome(id, req.user.id, updates);
+    const income = await incomeService.updateIncome(
+      id,
+      req.user.user_id,
+      updates
+    );
     res.json(income);
   } catch (error) {
     console.error("Error updating income:", error);
@@ -139,7 +144,7 @@ export const deleteIncome = asyncHandler(async (req, res) => {
   }
 
   try {
-    await incomeService.deleteIncome(id, req.user.id);
+    await incomeService.deleteIncome(id, req.user.user_id);
     res.status(204).send();
   } catch (error) {
     console.error("Error deleting income:", error);
