@@ -3,18 +3,18 @@ import { prisma } from "../db/prisma.js";
 //---------------INCOME---------------//
 
 //POST
-const createIncome = async (userId, data) => {
+const createIncome = async (user_id, data) => {
   return await prisma.income.create({
     data: {
       ...data,
-      user: { connect: { id: userId } },
+      user: { connect: { user_id } },
     },
   });
 };
 
 //GET ALL (with start and end date query params)
-const getIncomes = async (userId, filters = {}) => {
-  const where = { userId };
+const getIncomes = async (user_id, filters = {}) => {
+  const where = { user_id };
 
   if (filters.start || filters.end) {
     where.date = {};
@@ -29,16 +29,16 @@ const getIncomes = async (userId, filters = {}) => {
 };
 
 //GET BY ID
-const getIncomeById = async (id, userId) => {
+const getIncomeById = async (id, user_id) => {
   return await prisma.income.findFirst({
-    where: { id: parseInt(id), userId },
+    where: { income_id: parseInt(id), user_id },
   });
 };
 
 //UPDATE
-const updateIncome = async (id, userId, data) => {
+const updateIncome = async (id, user_id, data) => {
   const income = await prisma.income.findFirst({
-    where: { id: parseInt(id), userId },
+    where: { income_id: parseInt(id), user_id },
   });
 
   if (!income) {
@@ -46,15 +46,15 @@ const updateIncome = async (id, userId, data) => {
   }
 
   return await prisma.income.update({
-    where: { id: parseInt(id) },
+    where: { income_id: parseInt(id) },
     data,
   });
 };
 
 //DELETE
-const deleteIncome = async (id, userId) => {
+const deleteIncome = async (id, user_id) => {
   const income = await prisma.income.findFirst({
-    where: { id: parseInt(id), userId },
+    where: { income_id: parseInt(id), user_id },
   });
 
   if (!income) {
@@ -62,7 +62,7 @@ const deleteIncome = async (id, userId) => {
   }
 
   await prisma.income.delete({
-    where: { id: parseInt(id) },
+    where: { income_id: parseInt(id) },
   });
 };
 

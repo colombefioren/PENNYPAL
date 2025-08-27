@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  user_id   Int      @id @default(autoincrement()) @map("id")
   email     String   @unique @db.VarChar(255)
   password  String   @db.VarChar(255)
   username  String?  @db.VarChar(50)
@@ -31,15 +31,15 @@ model User {
 }
 
 model Category {
-  id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(50)
-  iconUrl   String?  @db.VarChar(500)
-  isCustom  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  category_id Int      @id @default(autoincrement()) @map("id")
+  name        String   @db.VarChar(50)
+  iconUrl     String?  @db.VarChar(500)
+  isCustom    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  userId Int?
-  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user_id Int?
+  user    User? @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 
   expenses Expense[]
 
@@ -47,7 +47,7 @@ model Category {
 }
 
 model Expense {
-  id          Int         @id @default(autoincrement())
+  expense_id  Int         @id @default(autoincrement()) @map("id")
   amount      Float
   description String?     @db.VarChar(2000)
   type        ExpenseType @default(ONE_TIME)
@@ -57,25 +57,25 @@ model Expense {
   startDate   DateTime?
   endDate     DateTime?
 
-  userId Int
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user_id Int
+  user    User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 
-  categoryId Int
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category_id Int
+  category    Category @relation(fields: [category_id], references: [category_id], onDelete: Cascade)
 
   @@map("expense")
 }
 
 model Income {
-  id          Int      @id @default(autoincrement())
+  income_id   Int      @id @default(autoincrement()) @map("id")
   amount      Float
   date        DateTime @default(now())
   source      String?  @db.VarChar(100)
   description String?  @db.VarChar(2000)
   createdAt   DateTime @default(now())
 
-  userId Int
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user_id Int
+  user    User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 
   @@map("income")
 }
