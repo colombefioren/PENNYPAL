@@ -141,67 +141,15 @@ paths:
           description: Expense updated
     delete:
       summary: Delete an expense
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
       responses:
         "204":
           description: Expense deleted
-  /incomes/categories:
-    get:
-      summary: Get system income categories
-      responses:
-        "200":
-          description: List of system income categories
-  /incomes/custom-categories:
-    get:
-      summary: Get user's custom income categories
-      responses:
-        "200":
-          description: List of user's custom income categories
-    post:
-      summary: Create a new custom income category
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [category_name]
-              properties:
-                category_name:
-                  type: string
-                icon_url:
-                  type: string
-      responses:
-        "201":
-          description: Income category created
-  /incomes/custom-categories/{id}:
-    parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
-    put:
-      summary: Update an income category
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [category_name]
-              properties:
-                category_name:
-                  type: string
-                icon_url:
-                  type: string
-      responses:
-        "200":
-          description: Income category updated
-    delete:
-      summary: Delete an income category
-      responses:
-        "204":
-          description: Income category deleted
   /incomes:
     get:
       summary: List all incomes
@@ -224,7 +172,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: [amount]
+              required: [amount, date]
               properties:
                 amount:
                   type: number
@@ -234,8 +182,6 @@ paths:
                   type: string
                 description:
                   type: string
-                category_id:
-                  type: number
       responses:
         "201":
           description: Income created
@@ -272,6 +218,12 @@ paths:
           description: Income updated
     delete:
       summary: Delete an income entry
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
       responses:
         "204":
           description: Income deleted
@@ -296,14 +248,14 @@ paths:
         "201":
           description: Category created
   /categories/{id}:
-    parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
     put:
       summary: Rename a category
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -317,6 +269,12 @@ paths:
           description: Category updated
     delete:
       summary: Delete a category
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
       responses:
         "204":
           description: Category deleted
