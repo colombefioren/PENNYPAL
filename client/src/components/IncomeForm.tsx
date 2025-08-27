@@ -92,7 +92,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           onChange={(e) => handleChange("amount", e.target.value)}
           required
           fullWidth
-           min={0} 
+           min={1} 
         />
 
         <DatePicker

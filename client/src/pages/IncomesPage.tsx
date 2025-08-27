@@ -121,10 +121,10 @@ export const IncomesPage = () => {
         {incomeToDelete && (
           <div className="mt-3 p-3 bg-gray-50 rounded">
             <p>
-              <strong>Amount:</strong> ${incomeToDelete.amount.toFixed(2)}
+              <strong>Amount: </strong>{incomeToDelete.amount.toFixed(2)} MGA
             </p>
             <p>
-              <strong>Source:</strong> {incomeToDelete.source}
+              <strong>Source:</strong> {incomeToDelete.source.length > 0 ? incomeToDelete.source : "-"}
             </p>
             <p>
               <strong>Date:</strong>{" "}
