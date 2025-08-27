@@ -33,7 +33,6 @@ export const IncomesPage = () => {
       toast.success("Income deleted successfully");
       setDeleteConfirmOpen(false);
       setIncomeToDelete(null);
-      //refresh after every operations
       incomeListRef.current?.refetch();
     } catch (error) {
       const message =
@@ -74,20 +73,18 @@ export const IncomesPage = () => {
 
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-           
-            <DatePicker
-              value={dateFilter.start ? new Date(dateFilter.start) : null}
-              onChange={handleStartDateChange}
-              label="Start Date"
-              size="medium"
-            />
-          
-            <DatePicker
-              value={dateFilter.end ? new Date(dateFilter.end) : null}
-              onChange={handleEndDateChange}
-              label="End Date"
-              size="medium"
-            />
+          <DatePicker
+            value={dateFilter.start ? new Date(dateFilter.start) : null}
+            onChange={handleStartDateChange}
+            label="Start Date"
+            size="medium"
+          />
+          <DatePicker
+            value={dateFilter.end ? new Date(dateFilter.end) : null}
+            onChange={handleEndDateChange}
+            label="End Date"
+            size="medium"
+          />
         </div>
 
         <IncomeList
