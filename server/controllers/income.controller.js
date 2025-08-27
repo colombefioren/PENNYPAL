@@ -1,5 +1,6 @@
 import incomeService from "../services/income.service.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { validateDateRange, validateIncomeData } from "../utils/validators.js";
 
 //---------------INCOME---------------//
 
@@ -10,6 +11,17 @@ export const createIncome = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json({ error: "Missing required fields: amount and date are required" });
+  }
+
+  //data validation
+
+  const validationErrors = validateIncomeData(req.body);
+
+  if (validationErrors.length > 0) {
+    return res.status(400).json({
+      error: "Validation failed",
+      details: validationErrors,
+    });
   }
 
   const incomeData = {
@@ -40,6 +52,14 @@ export const createIncome = asyncHandler(async (req, res) => {
 export const getIncomes = asyncHandler(async (req, res) => {
   const { start, end } = req.query;
   const filters = {};
+
+  const dateValidationErrors = validateDateRange(start, end);
+  if (dateValidationErrors.length > 0) {
+    return res.status(400).json({
+      error: "Invalid date range",
+      details: dateValidationErrors,
+    });
+  }
 
   if (start) {
     const parsedStart = new Date(start);
@@ -96,7 +116,23 @@ export const updateIncome = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "Invalid income ID" });
   }
 
-  const updates = req.body;
+  //in case the request body is empty
+
+  if (Object.keys(req.body).length === 0) {
+    return res.status(400).json({
+      error: "No update data provided",
+    });
+  }
+
+  const validationErrors = validateIncomeData(req.body);
+  if (validationErrors.length > 0) {
+    return res.status(400).json({
+      error: "Validation failed",
+      details: validationErrors,
+    });
+  }
+
+  const updates = {...req.body};
 
   if (updates.amount !== undefined) {
     if (isNaN(parseFloat(updates.amount))) {
