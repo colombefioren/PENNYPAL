@@ -333,13 +333,12 @@ export const request = <T>(
       const body = getRequestBody(options);
       const headers = await getHeaders(config, options, formData);
 
-    
       const axiosOptions = {
         url,
         method: options.method,
         data: body,
         headers,
-        params: options.query,
+        params: url.includes("?") ? undefined : options.query,
         withCredentials: true,
       };
 
