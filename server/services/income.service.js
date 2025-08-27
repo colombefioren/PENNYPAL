@@ -24,7 +24,7 @@ const getIncomes = async (user_id, filters = {}) => {
 
   return await prisma.income.findMany({
     where,
-    orderBy: [{ date: "desc" }, { createdAt: "desc" }],
+    orderBy: [{ date: "desc" }, { creation_date: "desc" }],
   });
 };
 
