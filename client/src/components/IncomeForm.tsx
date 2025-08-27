@@ -108,7 +108,6 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           value={formData.source ?? ""}
           onChange={(e) => handleChange("source", e.target.value)}
           fullWidth
-          required
         />
 
         <TextField
