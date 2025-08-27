@@ -16,7 +16,7 @@ datasource db {
 model User {
   user_id   Int      @id @default(autoincrement()) @map("id")
   email     String   @unique @db.VarChar(255)
-  password  String   @db.VarChar(255)
+  hashed_password  String   @db.VarChar(255)
   username  String?  @db.VarChar(50)
   firstName String?  @db.VarChar(100)
   lastName  String?  @db.VarChar(100)
