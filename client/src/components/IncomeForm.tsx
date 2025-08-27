@@ -20,7 +20,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
   const { showSuccess, showError } = useMascot();
 
   const [formData, setFormData] = useState<IncomeFormData>({
-    amount: income?.amount || 0,
+    amount: income?.amount || 1,
     date: income?.date
       ? new Date(income.date).toISOString().split("T")[0]
       : new Date().toISOString().split("T")[0],
@@ -38,7 +38,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
       });
     } else {
       setFormData({
-        amount: 0,
+        amount: 1,
         date: new Date().toISOString().split("T")[0],
         source: "",
         description: "",
