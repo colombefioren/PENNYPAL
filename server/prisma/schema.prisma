@@ -14,79 +14,73 @@ datasource db {
 }
 
 model User {
-  user_id           Int              @id @default(autoincrement())
-  username          String           @db.VarChar(50)
-  email             String           @unique @db.VarChar(255)
-  hashed_password   String           @db.VarChar(255)
-  firstname         String           @db.VarChar(100)
-  lastname          String           @db.VarChar(100)
-  created_at        DateTime         @default(now())
-  updated_at        DateTime         @updatedAt
-  expenses          Expense[]
-  incomes           Income[]
-  expense_categories ExpenseCategory[]
-  income_categories IncomeCategory[]
+  user_id   Int      @id @default(autoincrement()) @map("id")
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  username  String?  @db.VarChar(50)
+  firstName String?  @db.VarChar(100)
+  lastName  String?  @db.VarChar(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  expenses   Expense[]
+  incomes    Income[]
+  categories Category[]
 
   @@map("user")
 }
 
-model ExpenseCategory {
-  category_id   Int      @id @default(autoincrement())
-  category_name String   @db.VarChar(50)
-  icon_url      String?  @db.VarChar(500)
-  is_custom     Boolean  @default(false)
-  user_id       Int?
-  user          User?    @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  expenses      Expense[]
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+model Category {
+  category_id Int      @id @default(autoincrement()) @map("id")
+  name        String   @db.VarChar(50)
+  iconUrl     String?  @db.VarChar(500)
+  isCustom    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  @@map("expense_category")
-}
+  user_id Int?
+  user    User? @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 
-model IncomeCategory {
-  category_id   Int       @id @default(autoincrement())
-  category_name String    @db.VarChar(50)
-  icon_url      String?   @db.VarChar(500)
-  is_custom     Boolean   @default(false)
-  user_id       Int?
-  user          User?     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  incomes       Income[]
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
+  expenses Expense[]
 
-  @@map("income_category")
+  @@map("category")
 }
 
 model Expense {
-  expense_id     Int      @id @default(autoincrement())
-  amount         Float
-  description    String?  @db.VarChar(2000)
-  type           String   @default("ONE_TIME") @db.VarChar(20)
-  receipt_upload String?  @db.VarChar(2000)
-  creation_date  DateTime @default(now())
-  expense_date   DateTime?
-  start_date     DateTime?
-  end_date       DateTime?
-  user_id        Int
-  user           User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  category_id    Int
-  category       ExpenseCategory @relation(fields: [category_id], references: [category_id], onDelete: Cascade)
+  expense_id  Int         @id @default(autoincrement()) @map("id")
+  amount      Float
+  description String?     @db.VarChar(2000)
+  type        ExpenseType @default(ONE_TIME)
+  receiptUrl  String?     @db.VarChar(2000)
+  createdAt   DateTime    @default(now())
+  expenseDate DateTime?
+  startDate   DateTime?
+  endDate     DateTime?
+
+  user_id Int
+  user    User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  category_id Int
+  category    Category @relation(fields: [category_id], references: [category_id], onDelete: Cascade)
 
   @@map("expense")
 }
 
 model Income {
-  income_id      Int      @id @default(autoincrement())
-  amount         Float
-  date           DateTime @default(now())
-  source         String   @db.VarChar(100)
-  description    String?  @db.VarChar(2000)
-  creation_date  DateTime @default(now())
-  user_id        Int
-  user           User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  category_id    Int
-  category       IncomeCategory @relation(fields: [category_id], references: [category_id], onDelete: Cascade)
+  income_id   Int      @id @default(autoincrement()) @map("id")
+  amount      Float
+  date        DateTime @default(now())
+  source      String?  @db.VarChar(100)
+  description String?  @db.VarChar(2000)
+  createdAt   DateTime @default(now())
+
+  user_id Int
+  user    User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 
   @@map("income")
+}
+
+enum ExpenseType {
+  ONE_TIME
+  RECURRING
 }

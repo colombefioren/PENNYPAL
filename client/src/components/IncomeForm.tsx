@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import type { Income, IncomeFormData } from "../types/Income";
-import { useIncomeCategories } from "../hooks/useIncomeCategories";
-import { Button, TextField, Select, Dialog, Skeleton, DatePicker } from "../ui";
+import { Button, TextField, Dialog, DatePicker } from "../ui";
 import { useMascot } from "../hooks/useMascot";
 
 interface IncomeFormProps {
@@ -17,18 +16,16 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
   onCancel,
   open,
 }) => {
-  const { categories, loading: categoriesLoading } = useIncomeCategories();
   const [saving, setSaving] = useState(false);
   const { showSuccess, showError } = useMascot();
 
   const [formData, setFormData] = useState<IncomeFormData>({
-    amount: income?.amount || 0,
+    amount: income?.amount || 1,
     date: income?.date
       ? new Date(income.date).toISOString().split("T")[0]
       : new Date().toISOString().split("T")[0],
     source: income?.source || "",
     description: income?.description || "",
-    category_id: income?.category_id || 1,
   });
 
   useEffect(() => {
@@ -38,15 +35,13 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
         date: new Date(income.date).toISOString().split("T")[0],
         source: income.source,
         description: income.description || "",
-        category_id: income.category_id,
       });
     } else {
       setFormData({
-        amount: 0,
+        amount: 1,
         date: new Date().toISOString().split("T")[0],
         source: "",
         description: "",
-        category_id: 1,
       });
     }
   }, [income, open]);
@@ -72,8 +67,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
   ) => {
     setFormData((prev) => ({
       ...prev,
-      [field]:
-        field === "amount" || field === "category_id" ? Number(value) : value,
+      [field]: field === "amount" ? Number(value) : value,
     }));
   };
 
@@ -98,13 +92,15 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           onChange={(e) => handleChange("amount", e.target.value)}
           required
           fullWidth
+           min={1} 
         />
 
         <DatePicker
-          value={formData.date ? new Date(formData.date) : null}
+          value={formData.date ? new Date(formData.date) : new Date()}
           onChange={handleDateChange}
-          label="Select date"
+          label="Date"
           size="medium"
+          required
         />
 
         <TextField
@@ -112,25 +108,8 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           value={formData.source ?? ""}
           onChange={(e) => handleChange("source", e.target.value)}
           fullWidth
+          required
         />
-
-        {categoriesLoading ? (
-          <Skeleton variant="rect" height={56} rounded="rounded-md" />
-        ) : (
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">
-              Category
-            </label>
-            <Select
-              value={formData.category_id ?? null}
-              onChange={(value) => handleChange("category_id", value)}
-              options={categories.map((cat) => ({
-                label: cat.category_name,
-                value: cat.category_id,
-              }))}
-            />
-          </div>
-        )}
 
         <TextField
           label="Description"

@@ -33,7 +33,6 @@ export const IncomesPage = () => {
       toast.success("Income deleted successfully");
       setDeleteConfirmOpen(false);
       setIncomeToDelete(null);
-      //refresh after every operations
       incomeListRef.current?.refetch();
     } catch (error) {
       const message =
@@ -74,20 +73,18 @@ export const IncomesPage = () => {
 
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-           
-            <DatePicker
-              value={dateFilter.start ? new Date(dateFilter.start) : null}
-              onChange={handleStartDateChange}
-              label="Start Date"
-              size="medium"
-            />
-          
-            <DatePicker
-              value={dateFilter.end ? new Date(dateFilter.end) : null}
-              onChange={handleEndDateChange}
-              label="End Date"
-              size="medium"
-            />
+          <DatePicker
+            value={dateFilter.start ? new Date(dateFilter.start) : null}
+            onChange={handleStartDateChange}
+            label="Start Date"
+            size="medium"
+          />
+          <DatePicker
+            value={dateFilter.end ? new Date(dateFilter.end) : null}
+            onChange={handleEndDateChange}
+            label="End Date"
+            size="medium"
+          />
         </div>
 
         <IncomeList
@@ -124,10 +121,10 @@ export const IncomesPage = () => {
         {incomeToDelete && (
           <div className="mt-3 p-3 bg-gray-50 rounded">
             <p>
-              <strong>Amount:</strong> ${incomeToDelete.amount.toFixed(2)}
+              <strong>Amount: </strong>{incomeToDelete.amount.toFixed(2)} MGA
             </p>
             <p>
-              <strong>Source:</strong> {incomeToDelete.source}
+              <strong>Source:</strong> {incomeToDelete.source.length > 0 ? incomeToDelete.source : "-"}
             </p>
             <p>
               <strong>Date:</strong>{" "}
