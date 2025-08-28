@@ -1,29 +1,32 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
-import { requireAuth } from './middleware/auth.middleware.js';
-import { PrismaClient } from '@prisma/client';
-import incomeRoutes from './routes/income.route.js';
-import authRoutes from './routes/auth.route.js';
-import categoryRoutes from './routes/category.route.js';
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import { requireAuth } from "./middleware/auth.middleware.js";
+import { PrismaClient } from "@prisma/client";
+import incomeRoutes from "./routes/income.route.js";
+import authRoutes from "./routes/auth.route.js";
+import categoryRoutes from "./routes/category.route.js";
+import userRoutes from "./routes/user.route.js";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || true,
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || true,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
-
-app.use('/api/auth', authRoutes);
-app.use('/api/incomes', requireAuth, incomeRoutes);
-app.use('/api/categories', categoryRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/incomes", requireAuth, incomeRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/user", requireAuth, userRoutes);
 
 // Initialize a single Prisma client instance
 const prisma = new PrismaClient();

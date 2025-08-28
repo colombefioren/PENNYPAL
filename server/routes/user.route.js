@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { requireAuth } from "../middleware/auth.middleware.js";
 import {
   getUserProfile,
   updateProfile,
@@ -12,13 +11,8 @@ import {
 
 const router = Router();
 
-router.get("/profile", requireAuth, getUserProfile);
-router.put("/profile", requireAuth, validateUpdateProfile, updateProfile);
-router.patch(
-  "/profile/password",
-  requireAuth,
-  validateChangePassword,
-  changePassword
-);
+router.get("/profile", getUserProfile);
+router.put("/profile", validateUpdateProfile, updateProfile);
+router.patch("/profile/password", validateChangePassword, changePassword);
 
 export default router;
