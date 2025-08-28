@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import type { Income, IncomeFormData } from "../types/Income";
 import { Button, TextField, Dialog, DatePicker } from "../ui";
 import { useMascot } from "../hooks/useMascot";
+import { validateIncomeData } from "../utils/validators";
 
 interface IncomeFormProps {
   income?: Income;
@@ -20,13 +21,15 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
   const { showSuccess, showError } = useMascot();
 
   const [formData, setFormData] = useState<IncomeFormData>({
-    amount: income?.amount || 1,
+    amount: income?.amount || 0,
     date: income?.date
       ? new Date(income.date).toISOString().split("T")[0]
       : new Date().toISOString().split("T")[0],
     source: income?.source || "",
     description: income?.description || "",
   });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (income) {
@@ -38,18 +41,24 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
       });
     } else {
       setFormData({
-        amount: 1,
+        amount: 0,
         date: new Date().toISOString().split("T")[0],
         source: "",
         description: "",
       });
     }
+    setErrors({});
   }, [income, open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
+    const validationErrors = validateIncomeData(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
+    setSaving(true);
     try {
       await onSave(formData);
       showSuccess();
@@ -69,6 +78,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
       ...prev,
       [field]: field === "amount" ? Number(value) : value,
     }));
+    setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   const handleDateChange = (date: Date | null) => {
@@ -92,7 +102,9 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           onChange={(e) => handleChange("amount", e.target.value)}
           required
           fullWidth
-           min={1} 
+          min={0}
+          error={!!errors.amount}
+          helperText={errors.amount}
         />
 
         <DatePicker
@@ -108,6 +120,8 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           value={formData.source ?? ""}
           onChange={(e) => handleChange("source", e.target.value)}
           fullWidth
+          error={!!errors.source}
+          helperText={errors.source}
         />
 
         <TextField
@@ -115,6 +129,8 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
           value={formData.description || ""}
           onChange={(e) => handleChange("description", e.target.value)}
           fullWidth
+          error={!!errors.description}
+          helperText={errors.description}
         />
 
         <div className="flex gap-3 justify-end pt-4">
