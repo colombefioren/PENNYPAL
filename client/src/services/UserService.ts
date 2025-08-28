@@ -3,7 +3,7 @@ import { useMascotStore } from "../stores/mascotStore";
 import type { ChangePasswordRequest, UpdateProfileRequest, UserProfile } from "../types/UserProfile";
 
 export class UserService {
-  // GET user profile
+  //GET user profile
   static async getProfile() {
     try {
       const response = await DefaultService.getUserProfile();
