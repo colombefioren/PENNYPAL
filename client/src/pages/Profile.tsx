@@ -30,7 +30,7 @@ export const Profile: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="relative z-2 flex items-center justify-center">
+      <div className="relative min-h-screen z-2 flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-600">Loading profile...</p>
@@ -39,23 +39,9 @@ export const Profile: React.FC = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="relative z-2 flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow-md text-center max-w-md">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <Button onClick={fetchProfile} size="medium">
-            Try Again
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   if (!user) {
     return (
-      <div className="relative z-2 flex items-center justify-center">
+      <div className="relative min-h-screen z-2 flex items-center justify-center">
         <div className="bg-white p-6 rounded-lg shadow-md text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Please Log In
@@ -74,11 +60,24 @@ export const Profile: React.FC = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="relative min-h-screen z-2 flex items-center justify-center">
+        <div className="bg-white p-6 rounded-lg shadow-md text-center max-w-md">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <Button onClick={fetchProfile} size="medium">
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="pb-10 relative z-2 pt-30">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-  
-      <div className="space-y-6">
+        <div className="space-y-6">
           <ProfileForm
             profile={user}
             onUpdate={handleUpdateProfile}
