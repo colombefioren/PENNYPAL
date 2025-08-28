@@ -23,7 +23,7 @@ function App() {
       pauseOnHover={true}
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
     >
-      <div className="App min-h-screen relative">
+      <div className="App min-h-screen relative overflow-x-hidden">
         {location.pathname.includes("/login") ||
         location.pathname.includes("/register") ? null : (
           <>
