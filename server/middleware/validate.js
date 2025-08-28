@@ -140,14 +140,6 @@ export const validateUpdateProfile = [
       );
     }
 
-    if (firstname !== undefined && firstname === "") {
-      return next(new BadRequestError("First name cannot be empty"));
-    }
-
-    if (lastname !== undefined && lastname === "") {
-      return next(new BadRequestError("Last name cannot be empty"));
-    }
-
     if (username !== undefined && username === "") {
       return next(new BadRequestError("Username cannot be empty"));
     }
