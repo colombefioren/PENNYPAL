@@ -1,22 +1,16 @@
-import { useState } from "react";
-import { useUserProfile } from "../hooks/useUserProfile";
+import React, { useState } from "react";
 import { ProfileForm } from "../components/Profile/ProfileForm";
 import { PasswordForm } from "../components/Profile/PasswordForm";
 import { Button } from "../ui";
+import { useUserStore } from "../stores/userStore";
 import type {
   ChangePasswordRequest,
   UpdateProfileRequest,
 } from "../types/UserProfile";
 
-export const Profile = () => {
-  const {
-    profile,
-    loading,
-    error,
-    fetchProfile,
-    updateProfile,
-    changePassword,
-  } = useUserProfile();
+export const Profile: React.FC = () => {
+  const { user, loading, error, fetchProfile, updateProfile, changePassword } =
+    useUserStore();
   const [updating, setUpdating] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
 
@@ -36,7 +30,7 @@ export const Profile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center relative z-2">
+      <div className="min-h-screen relative z-2 flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-600">Loading profile...</p>
@@ -47,7 +41,7 @@ export const Profile = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center relative z-2">
+      <div className="min-h-screen relative z-2 flex items-center justify-center">
         <div className="bg-white p-6 rounded-lg shadow-md text-center max-w-md">
           <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
           <p className="text-gray-600 mb-4">{error}</p>
@@ -59,14 +53,22 @@ export const Profile = () => {
     );
   }
 
-  if (!profile) {
+  if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center relative z-2">
+      <div className="min-h-screen relative z-2 flex items-center justify-center">
         <div className="bg-white p-6 rounded-lg shadow-md text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Profile Not Found
+            Please Log In
           </h2>
-          <p className="text-gray-600">Unable to load user profile</p>
+          <p className="text-gray-600 mb-4">
+            You need to be logged in to view your profile
+          </p>
+          <Button
+            onClick={() => (window.location.href = "/login")}
+            size="medium"
+          >
+            Go to Login
+          </Button>
         </div>
       </div>
     );
@@ -84,7 +86,7 @@ export const Profile = () => {
 
         <div className="space-y-6">
           <ProfileForm
-            profile={profile}
+            profile={user}
             onUpdate={handleUpdateProfile}
             loading={updating}
           />
@@ -103,7 +105,7 @@ export const Profile = () => {
             <div className="flex items-center gap-2">
               <span className="font-medium text-gray-700">Member since:</span>
               <span className="text-gray-600">
-                {new Date(profile.created_at).toLocaleDateString()}
+                {new Date(user.created_at).toLocaleDateString()}
               </span>
             </div>
           </div>

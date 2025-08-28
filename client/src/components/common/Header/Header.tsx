@@ -37,10 +37,10 @@ const DashboardHeader = () => {
     return "User";
   };
 
-  const getUserRole = () => {
+  const getUsername = () => {
     if (loading) return "Loading...";
-    if (error || !user) return "Guest Mode";
-    return "Client";
+    if (error || !user) return "guest";
+    return user.username;
   };
 
   const getWelcomeMessage = () => {
@@ -106,7 +106,7 @@ const DashboardHeader = () => {
                 {getUserDisplayName()}
               </span>
               <span className="text-xs text-white/70 group-hover:text-amber-100/80 transition-colors duration-300">
-                {getUserRole()}
+                @{getUsername()}
               </span>
             </div>
 
