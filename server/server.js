@@ -28,24 +28,26 @@ app.use('/api/categories', categoryRoutes);
 // Initialize a single Prisma client instance
 const prisma = new PrismaClient();
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Expense Tracker API', status: 'running' });
+app.get("/", (req, res) => {
+  res.json({ message: "Expense Tracker API", status: "running" });
 });
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK' });
+app.get("/api/health", (req, res) => {
+  res.json({ status: "OK" });
 });
 
 // DB health check using Prisma raw query; does not require any models
-app.get('/api/db-check', async (_req, res) => {
+app.get("/api/db-check", async (_req, res) => {
   try {
     const result = await prisma.$queryRaw`SELECT NOW() as now`;
     // Result shape differs by driver; normalize to { now }
-    const now = Array.isArray(result) ? result[0]?.now ?? result[0]?.NOW ?? result[0] : result?.now ?? result;
+    const now = Array.isArray(result)
+      ? result[0]?.now ?? result[0]?.NOW ?? result[0]
+      : result?.now ?? result;
     res.json({ ok: true, now });
   } catch (err) {
-    console.error('DB check failed:', err);
-    res.status(500).json({ ok: false, error: 'DB connection failed' });
+    console.error("DB check failed:", err);
+    res.status(500).json({ ok: false, error: "DB connection failed" });
   }
 });
 
@@ -53,10 +55,10 @@ app.get('/api/db-check', async (_req, res) => {
 // eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {
   const status = err?.status || 500;
-  const payload = { error: err?.message || 'Internal Server Error' };
+  const payload = { error: err?.message || "Internal Server Error" };
   if (err?.details) payload.details = err.details;
   if (status >= 500) {
-    console.error('Unhandled error:', err);
+    console.error("Unhandled error:", err);
   }
   res.status(status).json(payload);
 });
