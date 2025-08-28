@@ -26,30 +26,30 @@ export const useUserProfile = () => {
 
   const updateProfile = async (
     data: UpdateProfileRequest
-  ): Promise<boolean> => {
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       setError(null);
       const updatedProfile = await UserService.updateProfile(data);
       setProfile(updatedProfile);
-      return true;
+      return { success: true };
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update profile");
-      return false;
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to update profile";
+      return { success: false, error: errorMessage };
     }
   };
 
   const changePassword = async (
     data: ChangePasswordRequest
-  ): Promise<boolean> => {
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       setError(null);
       await UserService.changePassword(data);
-      return true;
+      return { success: true };
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to change password"
-      );
-      return false;
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to change password";
+      return { success: false, error: errorMessage };
     }
   };
 

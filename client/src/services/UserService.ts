@@ -1,46 +1,60 @@
 import { DefaultService } from "../api/services/DefaultService";
 import { useMascotStore } from "../stores/mascotStore";
-import type { ChangePasswordRequest, UpdateProfileRequest, UserProfile } from "../types/UserProfile";
+import type {
+  UserProfile,
+  UpdateProfileRequest,
+  ChangePasswordRequest,
+} from "../types/UserProfile";
+
+interface ApiError {
+  body?: { message?: string };
+}
 
 export class UserService {
   //GET user profile
-  static async getProfile() {
+  static async getProfile(): Promise<UserProfile> {
     try {
       const response = await DefaultService.getUserProfile();
       useMascotStore.getState().setExpression("success");
       return response as UserProfile;
-    } catch (error) {
+    } catch (error: unknown) {
       useMascotStore.getState().setExpression("error");
-      console.error("Error fetching user profile:", error);
-      throw new Error("Failed to fetch user profile");
+      const err = error as ApiError;
+      const errorMessage = err.body?.message || "Failed to fetch user profile";
+      throw new Error(errorMessage);
     }
   }
 
   //UPDATE user profile
-  static async updateProfile(profileData: UpdateProfileRequest) {
+  static async updateProfile(
+    profileData: UpdateProfileRequest
+  ): Promise<UserProfile> {
     try {
       const response = await DefaultService.putUserProfile(profileData);
       useMascotStore.getState().setExpression("success");
       return response as UserProfile;
-    } catch (error) {
+    } catch (error: unknown) {
       useMascotStore.getState().setExpression("error");
-      console.error("Error updating profile:", error);
-      throw new Error("Failed to update profile");
+      const err = error as ApiError;
+      const errorMessage = err.body?.message || "Failed to update profile";
+      throw new Error(errorMessage);
     }
   }
 
   //CHANGE password
-  static async changePassword(passwordData: ChangePasswordRequest) {
+  static async changePassword(
+    passwordData: ChangePasswordRequest
+  ): Promise<{ message: string }> {
     try {
-      const response = await DefaultService.patchUserProfilePassword(
-        passwordData
-      );
+      const { ...apiData } = passwordData; // removes confirmPassword if exists
+      const response = await DefaultService.patchUserProfilePassword(apiData);
       useMascotStore.getState().setExpression("success");
-      return response;
-    } catch (error) {
+      return response as { message: string };
+    } catch (error: unknown) {
       useMascotStore.getState().setExpression("error");
-      console.error("Error changing password:", error);
-      throw new Error("Failed to change password");
+      const err = error as ApiError;
+      const errorMessage = err.body?.message || "Failed to change password";
+      throw new Error(errorMessage);
     }
   }
 }

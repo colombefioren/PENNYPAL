@@ -23,10 +23,16 @@ export const updateProfile = asyncHandler(async (req, res) => {
 
 export const changePassword = asyncHandler(async (req, res) => {
   const { currentPassword, newPassword } = req.body;
-
-  const result = await changeUserPassword(req.user.user_id, {
-    currentPassword,
-    newPassword,
-  });
-  return res.json(result);
+  try {
+    const result = await changeUserPassword(req.user.user_id, {
+      currentPassword,
+      newPassword,
+    });
+    return res.json(result);
+  } catch (error) {
+    if (error instanceof UnauthorizedError) {
+      throw new BadRequestError("Current password is incorrect");
+    }
+    throw error;
+  }
 });
