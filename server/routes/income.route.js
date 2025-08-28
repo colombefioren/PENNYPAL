@@ -6,15 +6,20 @@ import {
   updateIncome,
   deleteIncome,
 } from "../controllers/income.controller.js";
-import { requireAuth } from "../middleware/auth.middleware.js";
+import {
+  validateIncomeCreate,
+  validateIncomeUpdate,
+  validateIncomeQuery,
+} from "../middleware/incomeValidation.js";
+import { validateIdParam } from "../middleware/validate.js";
 
 const router = Router();
 
 // INCOME ROUTES
-router.get("/", requireAuth, getIncomes);
-router.get("/:id", requireAuth, getIncome);
-router.post("/", requireAuth, createIncome);
-router.put("/:id", requireAuth, updateIncome);
-router.delete("/:id", requireAuth, deleteIncome);
+router.get("/", validateIncomeQuery, getIncomes);
+router.get("/:id", validateIdParam("id"), getIncome);
+router.post("/", validateIncomeCreate, createIncome);
+router.put("/:id", validateIdParam("id"), validateIncomeUpdate, updateIncome);
+router.delete("/:id", validateIdParam("id"), deleteIncome);
 
 export default router;

@@ -1,41 +1,17 @@
 import incomeService from "../services/income.service.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { validateDateRange, validateIncomeData } from "../utils/validators.js";
 
 //---------------INCOME---------------//
 
 export const createIncome = asyncHandler(async (req, res) => {
   const { amount, date, source, description } = req.body;
 
-  if (!amount || !date) {
-    return res
-      .status(400)
-      .json({ error: "Missing required fields: amount and date are required" });
-  }
-
-  //data validation
-
-  const validationErrors = validateIncomeData(req.body);
-
-  if (validationErrors.length > 0) {
-    return res.status(400).json({
-      error: "Validation failed",
-      details: validationErrors,
-    });
-  }
-
   const incomeData = {
     amount: parseFloat(amount),
     source: source || "",
     description: description || "",
+    date: new Date(date),
   };
-
-  const parsedDate = new Date(date);
-  if (!isNaN(parsedDate.getTime())) {
-    incomeData.date = parsedDate;
-  } else {
-    return res.status(400).json({ error: "Invalid date format" });
-  }
 
   try {
     const income = await incomeService.createIncome(
@@ -53,20 +29,10 @@ export const getIncomes = asyncHandler(async (req, res) => {
   const { start, end } = req.query;
   const filters = {};
 
-  const dateValidationErrors = validateDateRange(start, end);
-  if (dateValidationErrors.length > 0) {
-    return res.status(400).json({
-      error: "Invalid date range",
-      details: dateValidationErrors,
-    });
-  }
-
   if (start) {
     const parsedStart = new Date(start);
     if (!isNaN(parsedStart.getTime())) {
       filters.start = parsedStart;
-    } else {
-      return res.status(400).json({ error: "Invalid start date format" });
     }
   }
 
@@ -74,8 +40,6 @@ export const getIncomes = asyncHandler(async (req, res) => {
     const parsedEnd = new Date(end);
     if (!isNaN(parsedEnd.getTime())) {
       filters.end = parsedEnd;
-    } else {
-      return res.status(400).json({ error: "Invalid end date format" });
     }
   }
 
@@ -90,10 +54,6 @@ export const getIncomes = asyncHandler(async (req, res) => {
 
 export const getIncome = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
-  if (!id || isNaN(parseInt(id))) {
-    return res.status(400).json({ error: "Invalid income ID" });
-  }
 
   try {
     const income = await incomeService.getIncomeById(id, req.user.user_id);
@@ -112,41 +72,20 @@ export const getIncome = asyncHandler(async (req, res) => {
 export const updateIncome = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  if (!id || isNaN(parseInt(id))) {
-    return res.status(400).json({ error: "Invalid income ID" });
-  }
-
-  //in case the request body is empty
-
   if (Object.keys(req.body).length === 0) {
     return res.status(400).json({
       error: "No update data provided",
     });
   }
 
-  const validationErrors = validateIncomeData(req.body);
-  if (validationErrors.length > 0) {
-    return res.status(400).json({
-      error: "Validation failed",
-      details: validationErrors,
-    });
-  }
-
-  const updates = {...req.body};
+  const updates = { ...req.body };
 
   if (updates.amount !== undefined) {
-    if (isNaN(parseFloat(updates.amount))) {
-      return res.status(400).json({ error: "Invalid amount" });
-    }
     updates.amount = parseFloat(updates.amount);
   }
 
   if (updates.date) {
-    const parsedDate = new Date(updates.date);
-    if (isNaN(parsedDate.getTime())) {
-      return res.status(400).json({ error: "Invalid date format" });
-    }
-    updates.date = parsedDate;
+    updates.date = new Date(updates.date);
   }
 
   try {
@@ -155,6 +94,11 @@ export const updateIncome = asyncHandler(async (req, res) => {
       req.user.user_id,
       updates
     );
+
+    if (!income) {
+      return res.status(404).json({ error: "Income not found" });
+    }
+
     res.json(income);
   } catch (error) {
     console.error("Error updating income:", error);
@@ -175,12 +119,9 @@ export const updateIncome = asyncHandler(async (req, res) => {
 export const deleteIncome = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  if (!id || isNaN(parseInt(id))) {
-    return res.status(400).json({ error: "Invalid income ID" });
-  }
-
   try {
     await incomeService.deleteIncome(id, req.user.user_id);
+
     res.status(204).send();
   } catch (error) {
     console.error("Error deleting income:", error);
