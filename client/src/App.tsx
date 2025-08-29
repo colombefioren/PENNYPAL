@@ -1,6 +1,6 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { ToastProvider } from "./ui";
-import { Incomes } from "./pages/Incomes";
+// import { Incomes } from "./pages/Incomes";
 import Sidebar from "./components/common/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import BackgroundImage from "./components/common/BackgroundImage";
@@ -9,6 +9,7 @@ import { EditIncome } from "./pages/EditIncome";
 import Mascot from "./components/common/Mascot";
 import { DashboardHeader } from "./components/common/Header";
 import { Profile } from "./pages/Profile";
+import IncomeMockup from "./pages/IncomeMockup";
 
 function App() {
   /*
@@ -35,7 +36,7 @@ function App() {
         <Mascot className="z-50" />
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/incomes" element={<Incomes />} />
+          <Route path="/incomes" element={<IncomeMockup />} />
           <Route path="/incomes/new" element={<CreateIncome />} />
           <Route path="/incomes/:id/edit" element={<EditIncome />} />
           <Route path="/profile" element={<Profile />} />
