@@ -107,14 +107,14 @@ const DatePicker: React.FC<DatePickerProps> = ({
       <div className={navCls}>
         <button
           type="button"
-          className="px-2 py-1 rounded hover:bg-gray-100"
+          className="px-2 py-1 rounded hover:bg-white/10"
           onClick={() => setView(new Date(view.getFullYear(), view.getMonth()-1, 1))}
           aria-label="Previous month"
         >‹</button>
         <div className="text-sm font-medium">{view.toLocaleString(undefined, { month: 'long', year: 'numeric' })}</div>
         <button
           type="button"
-          className="px-2 py-1 rounded hover:bg-gray-100"
+          className="px-2 py-1 rounded hover:bg-white/10"
           onClick={() => setView(new Date(view.getFullYear(), view.getMonth()+1, 1))}
           aria-label="Next month"
         >›</button>
